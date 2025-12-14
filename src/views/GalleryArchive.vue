@@ -371,14 +371,6 @@ const previousItem = () => {
   const prevIndex = (currentIndex - 1 + galleryItems.value.length) % galleryItems.value.length
   selectedItem.value = galleryItems.value[prevIndex]
 }
-
-onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
-  isDark.value = savedTheme === 'dark'
-  if (isDark.value) {
-    document.documentElement.classList.add('dark-mode')
-  }
-})
 </script>
 
 <style scoped>
