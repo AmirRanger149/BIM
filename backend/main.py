@@ -1,0 +1,256 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+
+from app.config import settings
+from app.database import init_db, get_db
+from app.routes import articles, gallery, other, auth_routes
+from app import models, auth, schemas
+from sqlalchemy.orm import Session
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """مدیریت lifecycle برنامه"""
+    # Startup
+    print("🚀 Starting BIM Backend API...")
+    
+    # ایجاد جداول دیتابیس
+    init_db()
+    print("✅ Database initialized")
+    
+    # ایجاد کاربر ادمین اولیه
+    db = next(get_db())
+    try:
+        admin_user = auth.get_user_by_email(db, settings.ADMIN_EMAIL)
+        if not admin_user:
+            admin_data = schemas.UserCreate(
+                email=settings.ADMIN_EMAIL,
+                password=settings.ADMIN_PASSWORD,
+                full_name="Admin"
+            )
+            auth.create_user(db, admin_data, is_admin=True)
+            print(f"✅ Admin user created: {settings.ADMIN_EMAIL}")
+        else:
+            print(f"✅ Admin user exists: {settings.ADMIN_EMAIL}")
+        
+        # ایجاد داده‌های نمونه اگر دیتابیس خالی است
+        create_sample_data(db)
+        
+    finally:
+        db.close()
+    
+    print(f"✅ Server running on {settings.HOST}:{settings.PORT}")
+    
+    yield
+    
+    # Shutdown
+    print("👋 Shutting down...")
+
+
+app = FastAPI(
+    title=settings.APP_NAME,
+    version=settings.VERSION,
+    lifespan=lifespan,
+    docs_url="/docs",
+    redoc_url="/redoc"
+)
+
+# CORS Configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Include Routers
+app.include_router(auth_routes.router)
+app.include_router(articles.router)
+app.include_router(gallery.router)
+app.include_router(other.router)
+
+
+@app.get("/")
+def root():
+    """Root endpoint"""
+    return {
+        "message": "Welcome to BIM Backend API",
+        "version": settings.VERSION,
+        "docs": "/docs",
+        "redoc": "/redoc"
+    }
+
+
+@app.get("/health")
+def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "version": settings.VERSION
+    }
+
+
+def create_sample_data(db: Session):
+    """ایجاد داده‌های نمونه برای تست"""
+    
+    # بررسی اگر داده وجود دارد
+    article_count = db.query(models.Article).count()
+    if article_count > 0:
+        print("✅ Sample data already exists")
+        return
+    
+    print("📦 Creating sample data...")
+    
+    # مقالات نمونه
+    sample_articles = [
+        {
+            "title": "آموزش جامع Vue.js 3 از صفر تا صد",
+            "excerpt": "یادگیری کامل Vue.js نسخه 3 با Composition API، راوتر و مدیریت state.",
+            "full_content": "<h2>مقدمه‌ای بر Vue.js 3</h2><p>Vue.js یکی از محبوب‌ترین فریمورک‌های جاوااسکریپت است...</p>",
+            "category": "برنامه‌نویسی",
+            "icon": "⚡",
+            "gradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            "author": "محمد رضایی",
+            "author_avatar": "م",
+            "author_role": "توسعه‌دهنده فرانت‌اند",
+            "read_time": "۱۲ دقیقه",
+            "featured": True,
+            "tags": ["Vue.js", "JavaScript", "Frontend", "Tutorial"],
+            "views": 3500
+        },
+        {
+            "title": "اصول طراحی UI/UX برای موبایل",
+            "excerpt": "نکات کلیدی در طراحی رابط کاربری موبایل برای بهبود تجربه کاربری.",
+            "full_content": "<h2>اهمیت طراحی موبایل</h2><p>امروزه بیش از 70٪ از کاربران از طریق موبایل به وب دسترسی دارند...</p>",
+            "category": "طراحی",
+            "icon": "🎨",
+            "gradient": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+            "author": "سارا احمدی",
+            "author_avatar": "س",
+            "author_role": "طراح UI/UX",
+            "read_time": "۹ دقیقه",
+            "featured": True,
+            "tags": ["UI/UX", "Design", "Mobile"],
+            "views": 4200
+        },
+        {
+            "title": "معرفی هوش مصنوعی ChatGPT و کاربردها",
+            "excerpt": "آشنایی با قابلیت‌های ChatGPT و نحوه استفاده از آن در پروژه‌های واقعی.",
+            "full_content": "<h2>ChatGPT چیست؟</h2><p>ChatGPT یک مدل زبانی قدرتمند است...</p>",
+            "category": "هوش مصنوعی",
+            "icon": "🤖",
+            "gradient": "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+            "author": "فاطمه کریمی",
+            "author_avatar": "ف",
+            "author_role": "پژوهشگر AI",
+            "read_time": "۱۰ دقیقه",
+            "featured": False,
+            "tags": ["AI", "ChatGPT", "Machine Learning"],
+            "views": 5200
+        }
+    ]
+    
+    for article_data in sample_articles:
+        article = models.Article(**article_data)
+        db.add(article)
+    
+    # گالری نمونه
+    sample_gallery = [
+        {
+            "title": "داشبورد مدیریتی پیشرفته",
+            "description": "سیستم جامع مدیریت با امکانات گسترده برای کنترل کامل کسب و کار",
+            "icon": "📊",
+            "gradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            "category": "داشبورد",
+            "category_color": "#667eea",
+            "date": "دی ۱۴۰۳",
+            "duration": "۳ ماه",
+            "views": 5200,
+            "comments": 123,
+            "technologies": ["Vue.js", "Node.js", "MongoDB", "Chart.js"]
+        },
+        {
+            "title": "اپلیکیشن موبایل فروشگاهی",
+            "description": "اپلیکیشن فروشگاه آنلاین با تجربه کاربری عالی",
+            "icon": "📱",
+            "gradient": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+            "category": "موبایل اپ",
+            "category_color": "#f093fb",
+            "date": "آذر ۱۴۰۳",
+            "duration": "۴ ماه",
+            "views": 7800,
+            "comments": 245,
+            "technologies": ["React Native", "Redux", "Firebase"]
+        }
+    ]
+    
+    for item_data in sample_gallery:
+        item = models.GalleryItem(**item_data)
+        db.add(item)
+    
+    # نظرات نمونه
+    sample_testimonials = [
+        {
+            "name": "علی محمدی",
+            "role": "مدیرعامل شرکت تکنولوژی پارس",
+            "avatar": "ع",
+            "text": "کار بسیار حرفه‌ای و تیمی فوق‌العاده. پروژه ما در زمان مقرر تحویل شد.",
+            "rating": 5,
+            "date": "دی ۱۴۰۴",
+            "project": "سیستم مدیریت محتوا",
+            "approved": True
+        }
+    ]
+    
+    for test_data in sample_testimonials:
+        testimonial = models.Testimonial(**test_data)
+        db.add(testimonial)
+    
+    # آمار نمونه
+    sample_statistics = [
+        {"number": "۱۵۰+", "label": "پروژه موفق", "icon": "🎯", "order": 1},
+        {"number": "۹۵%", "label": "رضایت مشتریان", "icon": "⭐", "order": 2},
+        {"number": "۵۰+", "label": "مشتری فعال", "icon": "👥", "order": 3},
+        {"number": "۸+", "label": "سال تجربه", "icon": "💼", "order": 4}
+    ]
+    
+    for stat_data in sample_statistics:
+        stat = models.Statistic(**stat_data)
+        db.add(stat)
+    
+    # گواهینامه‌های نمونه
+    sample_certificates = [
+        {
+            "title": "گواهینامه تخصصی Vue.js",
+            "issuer": "Vue School",
+            "date": "۲۰۲۳",
+            "icon": "⚡",
+            "color": "#42b883"
+        },
+        {
+            "title": "گواهینامه AWS Solutions Architect",
+            "issuer": "Amazon Web Services",
+            "date": "۲۰۲۳",
+            "icon": "☁️",
+            "color": "#ff9900"
+        }
+    ]
+    
+    for cert_data in sample_certificates:
+        cert = models.Certificate(**cert_data)
+        db.add(cert)
+    
+    db.commit()
+    print("✅ Sample data created successfully")
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "main:app",
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=settings.DEBUG
+    )
