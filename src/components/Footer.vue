@@ -4,11 +4,11 @@
       <div class="footer-content">
         <div class="footer-section">
           <div class="footer-logo">
-            <span class="logo-icon">✨</span>
-            <span class="logo-text">لندینگ</span>
+            <span class="logo-icon">🏗️</span>
+            <span class="logo-text">مهندسین مشاور BIM</span>
           </div>
           <p class="footer-description">
-            طراحی مینیمال و مدرن برای تجربه‌ای بی‌نظیر
+            شرکت دانش بنیان ارائه‌دهنده خدمات مهندسی، مشاوره و نظارت در پروژه‌های عمرانی و ساختمانی
           </p>
           <div class="social-links">
             <a href="#" class="social-link" aria-label="توییتر">
@@ -55,7 +55,7 @@
           <ul class="footer-contact">
             <li>
               <span class="contact-icon">📧</span>
-              <span>info@example.com</span>
+              <span>info@b1m.ir</span>
             </li>
             <li>
               <span class="contact-icon">�</span>

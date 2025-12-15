@@ -3,8 +3,8 @@
     <div class="container">
       <div class="nav-content">
         <div class="logo">
-          <span class="logo-icon">✨</span>
-          <span class="logo-text">لندینگ</span>
+          <span class="logo-icon">🏗️</span>
+          <span class="logo-text">BIM</span>
         </div>
         
         <ul class="nav-links" :class="{ 'active': mobileMenuOpen }">

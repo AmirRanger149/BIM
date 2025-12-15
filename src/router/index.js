@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 import Home from '../views/Home.vue'
 import GalleryArchive from '../views/GalleryArchive.vue'
 import ArticlesArchive from '../views/ArticlesArchive.vue'
@@ -11,6 +13,7 @@ import AdminContacts from '../views/AdminContacts.vue'
 import AdminSliders from '../views/AdminSliders.vue'
 import AdminCertificates from '../views/AdminCertificates.vue'
 import AdminLayout from '../components/AdminLayout.vue'
+import { logVisit } from '../api/services'
 
 // Guard برای احراز هویت ادمین
 const requireAdminAuth = (to, from, next) => {
@@ -110,5 +113,23 @@ const router = createRouter({
     }
   }
 })
+
+// Configure a thin, fast progress bar
+NProgress.configure({ showSpinner: false, trickleSpeed: 120 })
+
+router.beforeEach((to, from, next) => {
+  NProgress.start()
+  next()
+})
+
+router.afterEach((to) => {
+  NProgress.done()
+  // Log visits only for غیر-ادمین صفحات
+  if (!to.path.startsWith('/admin')) {
+    logVisit({ path: to.fullPath, referer: document.referrer })
+  }
+})
+
+router.onError(() => NProgress.done())
 
 export default router

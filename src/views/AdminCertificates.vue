@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-certificates">
+  <div class="admin-certificates admin-page">
     <div class="section-header">
       <h2>📜 مدیریت گواهینامه‌ها و استانداردها</h2>
       <button @click="openAddDialog" class="btn-add">
@@ -300,15 +300,17 @@ const saveCertificate = async () => {
   try {
     if (editingId.value) {
       await adminService.updateCertificate(editingId.value, formData.value)
+      try { const { success } = await import('../composables/useToast.js'); success('گواهینامه بروزرسانی شد'); } catch {}
     } else {
       await adminService.createCertificate(formData.value)
+      try { const { success } = await import('../composables/useToast.js'); success('گواهینامه با موفقیت اضافه شد'); } catch {}
     }
     
     await fetchCertificates()
     closeDialog()
   } catch (error) {
     console.error('خطا در ذخیره گواهینامه:', error)
-    alert('خطا در ذخیره گواهینامه. لطفاً دوباره سعی کنید.')
+    try { const { error: tError } = await import('../composables/useToast.js'); tError('خطا در ذخیره گواهینامه'); } catch {}
   }
 }
 
@@ -320,12 +322,13 @@ const deleteCertificate = (id) => {
 const confirmDelete = async () => {
   try {
     await adminService.deleteCertificate(deleteTargetId.value)
+    try { const { success } = await import('../composables/useToast.js'); success('گواهینامه حذف شد'); } catch {}
     await fetchCertificates()
     showConfirm.value = false
     deleteTargetId.value = null
   } catch (error) {
     console.error('خطا در حذف گواهینامه:', error)
-    alert('خطا در حذف گواهینامه. لطفاً دوباره سعی کنید.')
+    try { const { error: tError } = await import('../composables/useToast.js'); tError('خطا در حذف گواهینامه'); } catch {}
   }
 }
 
@@ -337,6 +340,7 @@ const fetchCertificates = async () => {
   } catch (error) {
     console.error('خطا در دریافت گواهینامه‌ها:', error)
     certificates.value = []
+    try { const { error: tError } = await import('../composables/useToast.js'); tError('خطا در دریافت گواهینامه‌ها'); } catch {}
   } finally {
     loading.value = false
   }
@@ -362,7 +366,7 @@ const handleImageUpload = async (event) => {
     formData.value.image = uploadedUrl
   } catch (error) {
     console.error('خطا در آپلود تصویر:', error)
-    alert('خطا در آپلود تصویر. لطفاً دوباره سعی کنید.')
+    try { const { error: tError } = await import('../composables/useToast.js'); tError('خطا در آپلود تصویر'); } catch {}
   } finally {
     uploading.value = false
   }
@@ -375,525 +379,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.admin-certificates {
-  padding: 2rem;
-  max-width: 1400px;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.section-header h2 {
-  margin: 0;
-  font-size: 1.8rem;
-  color: #333;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.btn-add {
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.btn-add:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-  gap: 1rem;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f0f0f0;
-  border-top-color: #667eea;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.empty-state {
-  text-align: center;
-  padding: 4rem 2rem;
-  color: #999;
-}
-
-.empty-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-}
-
-.btn-add-empty {
-  margin-top: 1rem;
-  padding: 0.75rem 1.5rem;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.btn-add-empty:hover {
-  background: #764ba2;
-}
-
-.certificates-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-.certificate-card {
-  background: white;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.certificate-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}
-
-.cert-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1rem;
-}
-
-.cert-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: white;
-}
-
-.cert-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn-icon {
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: #f0f0f0;
-  border-radius: 0.4rem;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.2s;
-}
-
-.btn-icon:hover {
-  background: #e0e0e0;
-}
-
-.btn-icon.danger:hover {
-  background: #ffebee;
-  color: #c62828;
-}
-
-.cert-content {
-  flex: 1;
-}
-
-.cert-title {
-  margin: 0 0 0.5rem;
-  font-size: 1.1rem;
-  color: #333;
-}
-
-.cert-issuer {
-  margin: 0 0 0.5rem;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.cert-meta {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 0.75rem;
-  font-size: 0.85rem;
-}
-
-.cert-date {
-  color: #999;
-}
-
-.cert-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: #e3f2fd;
-  color: #1976d2;
-  border-radius: 2rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.cert-badge.standard {
-  background: #fff3e0;
-  color: #f57c00;
-}
-
-.cert-badge.certificate {
-  background: #e8f5e9;
-  color: #388e3c;
-}
-
-.cert-badge.qualification {
-  background: #fce4ec;
-  color: #c2185b;
-}
-
-.cert-description {
-  margin: 0.75rem 0 0;
-  font-size: 0.9rem;
-  color: #666;
-  line-height: 1.5;
-}
-
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 0.75rem;
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.modal-header h3 {
-  margin: 0;
-  font-size: 1.3rem;
-  color: #333;
-}
-
-.btn-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #999;
-  transition: color 0.2s;
-}
-
-.btn-close:hover {
-  color: #333;
-}
-
-.certificate-form {
-  padding: 1.5rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #333;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 0.4rem;
-  font-size: 1rem;
-  font-family: inherit;
-  transition: border-color 0.2s;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.form-group textarea {
-  resize: vertical;
-}
-
-.form-hint {
-  display: block;
-  margin-top: 0.25rem;
-  font-size: 0.875rem;
-  color: #666;
-}
-
-.image-upload-group {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.file-input {
-  padding: 0.5rem;
-  border: 2px dashed #ddd;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.file-input:hover:not(:disabled) {
-  border-color: #667eea;
-  background: #f8f9ff;
-}
-
-.file-input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.upload-status {
-  padding: 0.5rem;
-  background: #e3f2fd;
-  color: #1976d2;
-  border-radius: 8px;
-  text-align: center;
-  font-size: 0.875rem;
-}
-
-.image-preview {
-  position: relative;
-  width: fit-content;
-}
-
-.image-preview img {
-  max-width: 200px;
-  max-height: 150px;
-  border-radius: 8px;
-  object-fit: cover;
-  border: 2px solid #ddd;
-}
-
-.btn-remove-image {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #f44336;
-  color: white;
-  border: 2px solid white;
-  font-size: 1.2rem;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.btn-remove-image:hover {
-  background: #d32f2f;
-  transform: scale(1.1);
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.btn-cancel,
-.btn-submit {
-  flex: 1;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.4rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-cancel {
-  background: #f0f0f0;
-  color: #333;
-}
-
-.btn-cancel:hover {
-  background: #e0e0e0;
-}
-
-.btn-submit {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-.btn-submit:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.confirm-dialog {
-  background: white;
-  border-radius: 0.75rem;
-  padding: 2rem;
-  text-align: center;
-  max-width: 400px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-}
-
-.confirm-dialog p {
-  margin-bottom: 1.5rem;
-  color: #333;
-  font-size: 1.1rem;
-}
-
-.confirm-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.btn-delete {
-  flex: 1;
-  padding: 0.75rem 1.5rem;
-  background: #c62828;
-  color: white;
-  border: none;
-  border-radius: 0.4rem;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.btn-delete:hover {
-  background: #b71c1c;
-}
-
-/* Transitions */
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
-}
-
-.modal-enter-active .modal-content,
-.modal-enter-active .confirm-dialog {
-  animation: slideIn 0.3s ease;
-}
-
-.modal-leave-active .modal-content,
-.modal-leave-active .confirm-dialog {
-  animation: slideOut 0.3s ease;
-}
-
-@keyframes slideIn {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes slideOut {
-  from {
-    transform: scale(1);
-    opacity: 1;
-  }
-  to {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .certificates-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .section-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .btn-add {
-    width: 100%;
-    text-align: center;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-}
+/* This view now uses the global admin theme (admin.css). */
+.empty-icon { font-size: 3rem; }
 </style>

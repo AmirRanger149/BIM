@@ -2,8 +2,8 @@
   <section id="certificates" class="certificates-section">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title">گواهینامه‌ها و افتخارات</h2>
-        <p class="section-subtitle">مدارک و گواهینامه‌های بین‌المللی ما</p>
+        <h2 class="section-title">گواهینامه‌ها و استانداردها</h2>
+        <p class="section-subtitle">مجوزها، گواهینامه‌ها و استانداردهای دریافتی</p>
       </div>
       
       <div class="certificates-grid">

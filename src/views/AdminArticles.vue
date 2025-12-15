@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-articles">
+  <div class="admin-articles admin-page">
     <div class="header-actions">
       <button @click="showForm = true" class="btn-primary">
         ➕ مقاله جدید
@@ -136,7 +136,7 @@ const loadArticles = async () => {
     sliders.value = await adminService.getSliders()
   } catch (error) {
     console.error('Failed to load articles:', error)
-    alert('خطا در بارگذاری مقالات')
+    try { const { error: tError } = await import('../composables/useToast.js'); tError('خطا در بارگذاری مقالات'); } catch {}
   } finally {
     loading.value = false
   }
@@ -152,27 +152,27 @@ const submitForm = async () => {
   try {
     if (editingId.value) {
       await adminService.updateArticle(editingId.value, formData.value)
-      alert('مقاله با موفقیت به‌روزرسانی شد')
+      try { const { success } = await import('../composables/useToast.js'); success('مقاله بروزرسانی شد'); } catch {}
     } else {
       await adminService.createArticle(formData.value)
-      alert('مقاله با موفقیت ایجاد شد')
+      try { const { success } = await import('../composables/useToast.js'); success('مقاله ایجاد شد'); } catch {}
     }
     closeForm()
     await loadArticles()
   } catch (error) {
-    alert('خطا: ' + (error.response?.data?.detail || 'عملیات ناموفق'))
+    try { const { error: tError } = await import('../composables/useToast.js'); tError(error.response?.data?.detail || 'خطا در ذخیره مقاله'); } catch {}
   }
 }
 
 const deleteArticle = async (id) => {
-  if (!confirm('آیا از حذف این مقاله مطمئن هستید؟')) return
+  if (!confirm('آیا از حذف این مقاله مطمئن هستید؟')) return 
   
   try {
     await adminService.deleteArticle(id)
-    alert('مقاله با موفقیت حذف شد')
+    try { const { success } = await import('../composables/useToast.js'); success('مقاله حذف شد'); } catch {}
     await loadArticles()
   } catch (error) {
-    alert('خطا: ' + (error.response?.data?.detail || 'عملیات ناموفق'))
+    try { const { error: tError } = await import('../composables/useToast.js'); tError(error.response?.data?.detail || 'خطا در حذف مقاله'); } catch {}
   }
 }
 
@@ -205,7 +205,7 @@ const handleImageUpload = async (event) => {
     const response = await adminService.uploadFile(formDataFile)
     formData.value.image = response.url
   } catch (error) {
-    alert('خطا در آپلود تصویر: ' + (error.response?.data?.detail || 'عملیات ناموفق'))
+    try { const { error: tError } = await import('../composables/useToast.js'); tError(error.response?.data?.detail || 'خطا در آپلود تصویر'); } catch {}
   } finally {
     uploadingImage.value = false
   }
@@ -217,252 +217,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.admin-articles {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.header-actions {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.btn-primary {
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
-}
-
-.modal-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
-  border-radius: 16px;
-  max-width: 600px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
-  border: 1px solid rgba(102, 126, 234, 0.2);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.modal-header h2 {
-  margin: 0;
-  color: #2d3748;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #718096;
-}
-
-.article-form {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-group label {
-  font-weight: 600;
-  color: #2d3748;
-  font-size: 0.9rem;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-family: inherit;
-  font-size: 0.95rem;
-  color: #2d3748;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.file-input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.file-input {
-  padding: 0.75rem;
-  border: 2px dashed #667eea;
-  border-radius: 6px;
-  cursor: pointer;
-  background: #f7fafc;
-  color: #2d3748;
-}
-
-.file-input:hover {
-  background: #edf2f7;
-}
-
-.uploading-status {
-  color: #667eea;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.btn-secondary {
-  padding: 0.75rem 1.5rem;
-  background: #e2e8f0;
-  color: #2d3748;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.btn-secondary:hover {
-  background: #cbd5e0;
-}
-
-.articles-list {
-  background: #ffffff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.loading,
-.empty {
-  padding: 3rem;
-  text-align: center;
-  color: #718096;
-  background: white;
-}
-
-.table-wrapper {
-  overflow-x: auto;
-}
-
-.articles-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-}
-
-.articles-table thead {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.articles-table th {
-  padding: 1rem;
-  text-align: right;
-  font-weight: 700;
-  color: white;
-  border-bottom: 2px solid #667eea;
-  font-size: 0.95rem;
-}
-
-.articles-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #e2e8f0;
-  color: #2d3748;
-  background: white;
-}
-
-.articles-table tbody tr:hover {
-  background: #f7fafc;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn-edit,
-.btn-delete {
-  padding: 0.5rem 0.75rem;
-  background: none;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.3s;
-}
-
-.btn-edit:hover {
-  background: #edf2f7;
-  border-color: #667eea;
-}
-
-.btn-delete:hover {
-  background: #fff5f5;
-  border-color: #e53e3e;
-}
-
-@media (max-width: 768px) {
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
-  .modal-card {
-    width: 95%;
-  }
-}
+/* This view now uses the global admin theme (admin.css). */
+.header-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+.articles-table thead { background: #f8f9fa; }
 </style>

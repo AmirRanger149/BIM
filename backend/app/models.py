@@ -165,3 +165,15 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class Visit(Base):
+    """ثبت بازدید صفحات (Visitor logs)"""
+    __tablename__ = "visits"
+
+    id = Column(Integer, primary_key=True, index=True)
+    path = Column(String(500), index=True)
+    ip = Column(String(100), index=True)
+    user_agent = Column(Text)
+    referer = Column(String(500))
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)

@@ -2,8 +2,8 @@
   <section id="gallery" class="gallery-section">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title">نمونه کارهای ما</h2>
-        <p class="section-subtitle">پورتفولیو و پروژه‌های موفق ما</p>
+        <h2 class="section-title">پروژه‌های اجرا شده</h2>
+        <p class="section-subtitle">نمونه‌ای از پروژه‌های طراحی، نظارت و اجرای شرکت</p>
         <router-link v-if="showViewAll" to="/gallery" class="view-all-btn">
           مشاهده همه پروژه‌ها
           <span class="btn-icon">→</span>

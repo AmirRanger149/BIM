@@ -2,12 +2,14 @@
   <div class="app" :class="{ 'dark-mode': isDark }">
     <Loader />
     <router-view />
+    <ToastContainer />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, provide, watch } from 'vue'
 import Loader from './components/Loader.vue'
+import ToastContainer from './components/ToastContainer.vue'
 
 const isDark = ref(false)
 

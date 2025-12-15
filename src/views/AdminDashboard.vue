@@ -64,6 +64,38 @@
           <p class="stat-number">{{ stats.certificates }}</p>
         </div>
       </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">👁️</div>
+        <div class="stat-info">
+          <h3>کل بازدیدها</h3>
+          <p class="stat-number">{{ visitSummary.total_visits }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info">
+          <h3>امروز</h3>
+          <p class="stat-number">{{ visitSummary.today_visits }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🗓️</div>
+        <div class="stat-info">
+          <h3>۷ روز اخیر</h3>
+          <p class="stat-number">{{ visitSummary.last7_visits }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🌐</div>
+        <div class="stat-info">
+          <h3>IP یکتا</h3>
+          <p class="stat-number">{{ visitSummary.unique_ips }}</p>
+        </div>
+      </div>
     </div>
 
     <div class="quick-actions">
@@ -94,13 +126,31 @@ const stats = ref({
   contacts: 0,
   sliders: 0,
   certificates: 0,
+  services: 0,
   unread_contacts: 0,
-  pending_testimonials: 0
+  pending_testimonials: 0,
+  visits: {
+    total: 0,
+    today: 0,
+    last7: 0,
+    last30: 0,
+    unique_ips: 0
+  }
+})
+
+const visitSummary = ref({
+  total_visits: 0,
+  unique_ips: 0,
+  today_visits: 0,
+  last7_visits: 0,
+  last30_visits: 0,
+  per_day: []
 })
 
 onMounted(async () => {
   try {
     stats.value = await adminService.getDashboardStats()
+    visitSummary.value = await adminService.getVisitSummary()
   } catch (error) {
     console.error('Failed to fetch dashboard stats:', error)
   }

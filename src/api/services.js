@@ -258,6 +258,20 @@ export const getStatistics = async () => {
   }
 }
 
+// ============= VISITS API =============
+
+export const logVisit = async ({ path, referer }) => {
+  try {
+    await apiClient.post('/api/visit', {
+      path,
+      referer: referer || undefined
+    })
+  } catch (error) {
+    // Silent fail to avoid impacting UX
+    console.warn('Visit log failed', error?.message || error)
+  }
+}
+
 // ============= CONTACT API =============
 
 /**
@@ -330,6 +344,11 @@ export const adminLogin = async (credentials) => {
  */
 export const getAdminDashboardStats = async () => {
   const response = await apiClient.get('/api/admin/dashboard/stats')
+  return response.data
+}
+
+export const getVisitSummary = async () => {
+  const response = await apiClient.get('/api/admin/visits/summary')
   return response.data
 }
 
@@ -659,6 +678,9 @@ export const adminService = {
   createCertificate: createAdminCertificate,
   updateCertificate: updateAdminCertificate,
   deleteCertificate: deleteAdminCertificate,
+
+  // Visits
+  getVisitSummary,
   
   // Services
   getServices: getAdminServices,
@@ -692,6 +714,7 @@ export default {
   
   // Statistics
   getStatistics,
+  logVisit,
   
   // Contact
   sendContactForm,

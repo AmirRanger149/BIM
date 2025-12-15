@@ -11,7 +11,7 @@
               <div class="info-icon">📧</div>
               <div class="info-content">
                 <h4>ایمیل</h4>
-                <p>info@example.com</p>
+                <p>info@b1m.ir</p>
               </div>
             </div>
             
@@ -19,15 +19,15 @@
               <div class="info-icon">📱</div>
               <div class="info-content">
                 <h4>تلفن</h4>
-                <p>۰۹۱۲ ۳۴۵ ۶۷۸۹</p>
+                <p>021-91094014</p>
               </div>
             </div>
             
             <div class="info-item">
               <div class="info-icon">📍</div>
               <div class="info-content">
-                <h4>آدرس</h4>
-                <p>تهران، خیابان ولیعصر، پلاک ۱۲۳</p>
+                <h4>دفتر مر کزی</h4>
+                <p>تهران، ایران, زعفرانیه، تقاطع بلوار بهزادی و ماکویی پور، ساختمان سروین، طبقه 3، واحد 33</p>
               </div>
             </div>
             

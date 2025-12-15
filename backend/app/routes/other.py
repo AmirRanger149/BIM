@@ -1,5 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
+from sqlalchemy import func
+from datetime import datetime, timedelta
 from typing import List
 
 from app.database import get_db
@@ -97,6 +99,31 @@ def create_certificate(
 
 
 # ============= STATISTICS =============
+
+@router.post("/visit", status_code=201)
+def track_visit(
+    visit: schemas.VisitCreate,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """ثبت بازدید صفحه"""
+    try:
+        ip_header = request.headers.get('x-forwarded-for') or ''
+        ip = ip_header.split(',')[0].strip() if ip_header else (request.client.host if request.client else None)
+        user_agent = request.headers.get('user-agent')
+        referer = visit.referer or request.headers.get('referer')
+
+        db_visit = models.Visit(
+            path=visit.path[:500],
+            ip=ip[:100] if ip else None,
+            user_agent=user_agent,
+            referer=referer[:500] if referer else None
+        )
+        db.add(db_visit)
+        db.commit()
+    except Exception as exc:  # لاگ خطا و ادامه بدون توقف
+        print("visit log error", exc)
+    return {"success": True}
 
 @router.get("/sliders/{slider_id}", response_model=dict)
 def get_slider(slider_id: int, db: Session = Depends(get_db)):

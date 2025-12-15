@@ -10,8 +10,8 @@
     
     <div v-show="!selectedArticle" class="container">
       <div class="section-header">
-        <h2 class="section-title">آخرین مقالات</h2>
-        <p class="section-subtitle">آموزش‌ها و اخبار روز دنیای تکنولوژی</p>
+        <h2 class="section-title">اخبار و مقالات</h2>
+        <p class="section-subtitle">جدیدترین اخبار و مقالات تخصصی عمران و ساختمان</p>
         <router-link v-if="showViewAll" to="/articles" class="view-all-btn">
           مشاهده همه مقالات
           <span class="btn-icon">→</span>

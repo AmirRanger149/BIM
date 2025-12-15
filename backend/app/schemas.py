@@ -185,6 +185,22 @@ class Statistic(StatisticBase):
         from_attributes = True
 
 
+# ============= Visit Schemas =============
+
+class VisitCreate(BaseModel):
+    path: str
+    referer: Optional[str] = None
+
+
+class VisitSummary(BaseModel):
+    total_visits: int
+    unique_ips: int
+    today_visits: int
+    last7_visits: int
+    last30_visits: int
+    per_day: list
+
+
 # ============= Contact Schemas =============
 
 class ContactBase(BaseModel):

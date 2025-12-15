@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from typing import List, Optional
+from datetime import datetime, timedelta
 import shutil
 import os
 from pathlib import Path
@@ -411,6 +413,14 @@ def get_dashboard_stats(
     services_count = db.query(models.Service).count()
     unread_contacts = db.query(models.Contact).filter(models.Contact.read == False).count()
     pending_testimonials = db.query(models.Testimonial).filter(models.Testimonial.approved == False).count()
+    total_visits = db.query(models.Visit).count()
+    today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    last7 = datetime.utcnow() - timedelta(days=7)
+    last30 = datetime.utcnow() - timedelta(days=30)
+    today_visits = db.query(models.Visit).filter(models.Visit.created_at >= today_start).count()
+    last7_visits = db.query(models.Visit).filter(models.Visit.created_at >= last7).count()
+    last30_visits = db.query(models.Visit).filter(models.Visit.created_at >= last30).count()
+    unique_ips = db.query(func.count(func.distinct(models.Visit.ip))).scalar() or 0
     
     return {
         "articles": articles_count,
@@ -421,7 +431,48 @@ def get_dashboard_stats(
         "certificates": certificates_count,
         "services": services_count,
         "unread_contacts": unread_contacts,
-        "pending_testimonials": pending_testimonials
+        "pending_testimonials": pending_testimonials,
+        "visits": {
+            "total": total_visits,
+            "today": today_visits,
+            "last7": last7_visits,
+            "last30": last30_visits,
+            "unique_ips": unique_ips
+        }
+    }
+
+
+@router.get("/visits/summary", response_model=schemas.VisitSummary)
+def get_visit_summary(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """خلاصه آمار بازدیدها برای پنل ادمین"""
+    now = datetime.utcnow()
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    last7 = now - timedelta(days=7)
+    last30 = now - timedelta(days=30)
+
+    total_visits = db.query(models.Visit).count()
+    unique_ips = db.query(func.count(func.distinct(models.Visit.ip))).scalar() or 0
+    today_visits = db.query(models.Visit).filter(models.Visit.created_at >= today_start).count()
+    last7_visits = db.query(models.Visit).filter(models.Visit.created_at >= last7).count()
+    last30_visits = db.query(models.Visit).filter(models.Visit.created_at >= last30).count()
+
+    per_day_rows = db.query(
+        func.date(models.Visit.created_at).label("day"),
+        func.count().label("count")
+    ).filter(models.Visit.created_at >= last30).group_by("day").order_by("day").all()
+
+    per_day = [{"day": row.day, "count": row.count} for row in per_day_rows]
+
+    return {
+        "total_visits": total_visits,
+        "unique_ips": unique_ips,
+        "today_visits": today_visits,
+        "last7_visits": last7_visits,
+        "last30_visits": last30_visits,
+        "per_day": per_day
     }
 
 

@@ -10,19 +10,19 @@
       <div class="hero-content">
         <div class="hero-badge">
           <span class="badge-dot"></span>
-          ویژه و جدید
+          اولین در ایران
         </div>
         
         <h1 class="hero-title">
-          به دنیای
-          <span class="gradient-text">خلاقیت</span>
-          خوش آمدید
+          مهندسین مشاور
+          <span class="gradient-text">دانش بنیان بیم</span>
+          پیشرو در صنعت
         </h1>
         
         <p class="hero-subtitle">
-          طراحی مینیمال و مدرن با امکانات پیشرفته
+          ارائه خدمات مهندسی، مشاوره و نظارت در پروژه‌های عمرانی
           <br />
-          برای تجربه‌ای بی‌نظیر و حرفه‌ای
+          با بهره‌گیری از جدیدترین تکنولوژی‌های روز دنیا
         </p>
         
         <div class="hero-buttons">
