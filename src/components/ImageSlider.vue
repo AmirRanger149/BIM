@@ -51,6 +51,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import apiClient from '../api/client'
 
 const props = defineProps({
   image: {
@@ -109,8 +110,8 @@ const getImageUrl = (url) => {
   if (!url) return ''
   if (typeof url !== 'string') return ''
   if (url.startsWith('http')) return url
-  const baseUrl = props.apiBaseUrl || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
-  return `${baseUrl}${url}`
+  // استفاده از base URL از apiClient
+  return `${apiClient.defaults.baseURL}${url}`
 }
 
 // استخراج تصویر URL از object یا string

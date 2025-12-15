@@ -79,6 +79,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getSlider } from '../api/services'
+import apiClient from '../api/client'
 import ImageSlider from './ImageSlider.vue'
 
 const services = ref([])
@@ -111,8 +112,8 @@ const enrichServiceWithSlider = async (service) => {
 const fetchServices = async () => {
   try {
     loading.value = true
-    const response = await fetch('https://probable-doodle-45g6r4grp452qgq-8000.app.github.dev/api/services')
-    const data = await response.json()
+    const response = await apiClient.get('/api/services')
+    const data = response.data
     const servicesList = data.data || []
     
     // Enrich services with slider images

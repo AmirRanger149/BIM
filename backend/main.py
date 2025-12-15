@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+import os
 
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
@@ -64,15 +65,28 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# CORS Configuration
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["*"],
-    max_age=600,
-)
+# CORS Configuration - Allow all origins in development, restrict in production
+allowed_origins = settings.get_allowed_origins()
+
+# Allow wildcard for GitHub Codespaces during development
+if os.getenv("CODESPACES") == "true":
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origin_regex="https://.*\.app\.github\.dev",
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["*"],
+        max_age=600,
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=allowed_origins,
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["*"],
+        max_age=600,
+    )
 
 # Mount static files directory
 uploads_dir = Path(__file__).parent / "uploads"
