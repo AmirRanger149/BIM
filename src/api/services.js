@@ -352,6 +352,11 @@ export const getVisitSummary = async () => {
   return response.data
 }
 
+export const getVisitReport = async (params = {}) => {
+  const response = await apiClient.get('/api/admin/visits/report', { params })
+  return response.data
+}
+
 /**
  * دریافت تمام مقالات (ادمین)
  * @returns {Promise<Array>} لیست مقالات
@@ -649,6 +654,40 @@ export const deleteAdminService = async (id) => {
   return response.data
 }
 
+// ============= ADMIN USERS API =============
+
+/**
+ * دریافت همه کاربران (ادمین)
+ */
+export const getAdminUsers = async () => {
+  const response = await apiClient.get('/api/admin/users')
+  return response.data
+}
+
+/**
+ * ایجاد کاربر جدید (ادمین)
+ */
+export const createAdminUser = async (userData) => {
+  const response = await apiClient.post('/api/admin/users', userData)
+  return response.data
+}
+
+/**
+ * بروزرسانی کاربر (ادمین)
+ */
+export const updateAdminUser = async (id, userData) => {
+  const response = await apiClient.put(`/api/admin/users/${id}`, userData)
+  return response.data
+}
+
+/**
+ * حذف کاربر (ادمین)
+ */
+export const deleteAdminUser = async (id) => {
+  const response = await apiClient.delete(`/api/admin/users/${id}`)
+  return response.data
+}
+
 // Export admin service
 export const adminService = {
   login: adminLogin,
@@ -679,8 +718,15 @@ export const adminService = {
   updateCertificate: updateAdminCertificate,
   deleteCertificate: deleteAdminCertificate,
 
+  // Users
+  getUsers: getAdminUsers,
+  createUser: createAdminUser,
+  updateUser: updateAdminUser,
+  deleteUser: deleteAdminUser,
+
   // Visits
   getVisitSummary,
+  getVisitReport,
   
   // Services
   getServices: getAdminServices,

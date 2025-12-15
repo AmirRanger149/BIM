@@ -108,7 +108,8 @@ def create_user(db: Session, user: schemas.UserCreate, is_admin: bool = False) -
         email=user.email,
         full_name=user.full_name,
         hashed_password=hashed_password,
-        is_admin=is_admin
+        is_admin=is_admin,
+        is_active=user.is_active if hasattr(user, "is_active") else True
     )
     db.add(db_user)
     db.commit()

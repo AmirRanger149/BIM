@@ -1,122 +1,48 @@
 <template>
-  <div class="dashboard">
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">📝</div>
-        <div class="stat-info">
-          <h3>مقالات</h3>
-          <p class="stat-number">{{ stats.articles }}</p>
+  <div class="admin-page admin-dashboard">
+    <div class="admin-section-header">
+      <div>
+        <div class="eyebrow">📊 داشبورد</div>
+        <h2>مرور سریع محتوا و ترافیک</h2>
+        <p class="muted">هم‌راستا با سبک جدید سایت و افکت‌های شیشه‌ای</p>
+        <div class="meta-chips">
+          <span class="chip">بازدید کل {{ visitSummary.total_visits }}</span>
+          <span class="chip subtle">IP یکتا {{ visitSummary.unique_ips }}</span>
+          <span class="chip subtle">امروز {{ visitSummary.today_visits }}</span>
         </div>
       </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">🎨</div>
-        <div class="stat-info">
-          <h3>گالری</h3>
-          <p class="stat-number">{{ stats.gallery }}</p>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">⭐</div>
-        <div class="stat-info">
-          <h3>نظرات</h3>
-          <p class="stat-number">{{ stats.testimonials }}</p>
-        </div>
-      </div>
-
-      <div class="stat-card alert">
-        <div class="stat-icon">📧</div>
-        <div class="stat-info">
-          <h3>پیام‌های خوانده‌نشده</h3>
-          <p class="stat-number">{{ stats.unread_contacts }}</p>
-        </div>
-      </div>
-
-      <div class="stat-card alert">
-        <div class="stat-icon">✅</div>
-        <div class="stat-info">
-          <h3>نظرات در انتظار تایید</h3>
-          <p class="stat-number">{{ stats.pending_testimonials }}</p>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">📞</div>
-        <div class="stat-info">
-          <h3>کل پیام‌ها</h3>
-          <p class="stat-number">{{ stats.contacts }}</p>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">🎬</div>
-        <div class="stat-info">
-          <h3>اسلایدرها</h3>
-          <p class="stat-number">{{ stats.sliders }}</p>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">📜</div>
-        <div class="stat-info">
-          <h3>گواهینامه‌ها</h3>
-          <p class="stat-number">{{ stats.certificates }}</p>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">👁️</div>
-        <div class="stat-info">
-          <h3>کل بازدیدها</h3>
-          <p class="stat-number">{{ visitSummary.total_visits }}</p>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">📅</div>
-        <div class="stat-info">
-          <h3>امروز</h3>
-          <p class="stat-number">{{ visitSummary.today_visits }}</p>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">🗓️</div>
-        <div class="stat-info">
-          <h3>۷ روز اخیر</h3>
-          <p class="stat-number">{{ visitSummary.last7_visits }}</p>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">🌐</div>
-        <div class="stat-info">
-          <h3>IP یکتا</h3>
-          <p class="stat-number">{{ visitSummary.unique_ips }}</p>
-        </div>
+      <div class="header-actions">
+        <router-link to="/admin/reports" class="btn-primary ghost">گزارش پیشرفته</router-link>
       </div>
     </div>
 
-    <div class="quick-actions">
-      <h2>عملیات سریع</h2>
+    <div class="card-grid stat-grid">
+      <div class="card glass-card stat-tile" v-for="item in statTiles" :key="item.label">
+        <div class="stat-icon">{{ item.icon }}</div>
+        <div class="stat-text">
+          <p class="muted">{{ item.label }}</p>
+          <div class="stat-number">{{ item.value }}</div>
+        </div>
+        <span v-if="item.badge" class="badge">{{ item.badge }}</span>
+      </div>
+    </div>
+
+    <div class="panel quick-actions">
+      <div class="panel-header">
+        <h3>عملیات سریع</h3>
+        <span class="muted">افزودن محتوای تازه</span>
+      </div>
       <div class="actions-grid">
-        <router-link to="/admin/articles" class="action-button">
-          ➕ افزودن مقاله
-        </router-link>
-        <router-link to="/admin/gallery" class="action-button">
-          ➕ افزودن به گالری
-        </router-link>
-        <router-link to="/admin/testimonials" class="action-button">
-          ➕ افزودن نظر
-        </router-link>
+        <router-link to="/admin/articles" class="action-button">➕ مقاله جدید</router-link>
+        <router-link to="/admin/gallery" class="action-button">➕ آیتم گالری</router-link>
+        <router-link to="/admin/testimonials" class="action-button">➕ نظر مشتری</router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { adminService } from '../api/services'
 
 const stats = ref({
@@ -155,112 +81,37 @@ onMounted(async () => {
     console.error('Failed to fetch dashboard stats:', error)
   }
 })
+
+const statTiles = computed(() => ([
+  { icon: '📝', label: 'مقالات', value: stats.value.articles },
+  { icon: '🎨', label: 'گالری', value: stats.value.gallery },
+  { icon: '⭐', label: 'نظرات', value: stats.value.testimonials },
+  { icon: '📧', label: 'پیام‌های خوانده‌نشده', value: stats.value.unread_contacts, badge: 'اهم' },
+  { icon: '✅', label: 'نظرات در انتظار', value: stats.value.pending_testimonials },
+  { icon: '📞', label: 'کل پیام‌ها', value: stats.value.contacts },
+  { icon: '🎬', label: 'اسلایدرها', value: stats.value.sliders },
+  { icon: '📜', label: 'گواهینامه‌ها', value: stats.value.certificates },
+  { icon: '👁️', label: 'کل بازدید', value: visitSummary.value.total_visits },
+  { icon: '📅', label: 'امروز', value: visitSummary.value.today_visits },
+  { icon: '🗓️', label: '۷ روز اخیر', value: visitSummary.value.last7_visits },
+  { icon: '🌐', label: 'IP یکتا', value: visitSummary.value.unique_ips }
+]))
 </script>
-
 <style scoped>
-.dashboard {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
+.admin-dashboard { display: flex; flex-direction: column; gap: 1.5rem; }
+.stat-grid { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.stat-tile { display: flex; align-items: center; gap: 1rem; padding: 1.25rem; position: relative; }
+.stat-icon { font-size: 2rem; line-height: 1; }
+.stat-text { flex: 1; }
+.stat-number { font-size: 1.7rem; font-weight: 800; color: #111827; margin: 0.1rem 0 0; }
+.badge { position: absolute; top: 0.85rem; left: 0.85rem; }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.stat-card {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s;
-  border: 2px solid transparent;
-}
-
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.stat-card.alert {
-  border-color: #fed7d7;
-  background: #fff5f5;
-}
-
-.stat-icon {
-  font-size: 2.5rem;
-  line-height: 1;
-}
-
-.stat-info h3 {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #718096;
-  font-weight: 500;
-}
-
-.stat-number {
-  margin: 0.5rem 0 0 0;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #2d3748;
-}
-
-.stat-card.alert .stat-number {
-  color: #e53e3e;
-}
-
-.quick-actions {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.quick-actions h2 {
-  margin-top: 0;
-  color: #2d3748;
-  font-size: 1.25rem;
-}
-
-.actions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.action-button {
-  padding: 1.25rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  text-decoration: none;
-  border-radius: 10px;
-  text-align: center;
-  font-weight: 600;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.action-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-}
+.quick-actions { margin-top: 0.5rem; }
+.actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+.action-button { padding: 1rem; background: linear-gradient(135deg, var(--admin-primary-start), var(--admin-primary-end)); color: #fff; text-decoration: none; border-radius: var(--admin-radius-sm); text-align: center; font-weight: 700; transition: transform 0.2s ease, box-shadow 0.25s ease; box-shadow: 0 12px 24px rgba(102,126,234,0.25); }
+.action-button:hover { transform: translateY(-2px); box-shadow: var(--admin-glow); }
 
 @media (max-width: 768px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .actions-grid {
-    grid-template-columns: 1fr;
-  }
+  .stat-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 }
 </style>

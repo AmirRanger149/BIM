@@ -135,6 +135,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
+import { sendContactForm } from '../api/services'
 
 const formData = reactive({
   name: '',
@@ -148,28 +149,49 @@ const isSubmitting = ref(false)
 const submitMessage = ref('')
 const submitStatus = ref('')
 
+const subjectLabel = (value) => {
+  switch (value) {
+    case 'consultation': return 'مشاوره'
+    case 'project': return 'سفارش پروژه'
+    case 'support': return 'پشتیبانی'
+    case 'other': return 'سایر'
+    default: return 'عمومی'
+  }
+}
+
+const resetForm = () => {
+  formData.name = ''
+  formData.email = ''
+  formData.phone = ''
+  formData.subject = ''
+  formData.message = ''
+}
+
 const submitForm = async () => {
   isSubmitting.value = true
   submitMessage.value = ''
-  
-  // Simulate API call
-  setTimeout(() => {
-    isSubmitting.value = false
+  submitStatus.value = ''
+
+  try {
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      subject: subjectLabel(formData.subject),
+      message: `${formData.message}\n\nشماره تماس: ${formData.phone || 'ثبت نشده'}`
+    }
+
+    await sendContactForm(payload)
     submitMessage.value = 'پیام شما با موفقیت ارسال شد! به زودی با شما تماس خواهیم گرفت.'
     submitStatus.value = 'success'
-    
-    // Reset form
-    formData.name = ''
-    formData.email = ''
-    formData.phone = ''
-    formData.subject = ''
-    formData.message = ''
-    
-    // Clear message after 5 seconds
-    setTimeout(() => {
-      submitMessage.value = ''
-    }, 5000)
-  }, 1500)
+    resetForm()
+  } catch (err) {
+    console.error('Contact submit error', err)
+    submitMessage.value = err.response?.data?.detail || 'ارسال پیام ناموفق بود. لطفا دوباره تلاش کنید.'
+    submitStatus.value = 'error'
+  } finally {
+    isSubmitting.value = false
+    setTimeout(() => { submitMessage.value = '' }, 5000)
+  }
 }
 </script>
 

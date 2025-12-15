@@ -1,9 +1,20 @@
 <template>
   <div class="admin-articles admin-page">
-    <div class="header-actions">
-      <button @click="showForm = true" class="btn-primary">
-        ➕ مقاله جدید
-      </button>
+    <div class="admin-section-header">
+      <div>
+        <div class="eyebrow">📝 مدیریت مقالات</div>
+        <h2>مقالات</h2>
+        <p class="muted">ایجاد، ویرایش و مدیریت انتشار مقالات سایت</p>
+        <div class="meta-chips">
+          <span class="chip">{{ articles.length }} مقاله</span>
+          <span class="chip subtle" v-if="sliders.length">{{ sliders.length }} اسلایدر موجود</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button @click="showForm = true" class="btn-primary ghost">
+          ➕ مقاله جدید
+        </button>
+      </div>
     </div>
 
     <!-- فرم افزودن/ویرایش -->
@@ -80,7 +91,7 @@
       </div>
       <div v-else>
         <div class="table-wrapper">
-          <table class="articles-table">
+          <table class="articles-table frosted-table">
             <thead>
               <tr>
                 <th>عنوان</th>
@@ -94,7 +105,7 @@
               <tr v-for="article in articles" :key="article.id">
                 <td>{{ article.title }}</td>
                 <td>{{ article.author }}</td>
-                <td>{{ article.category }}</td>
+                <td><span class="pill">{{ article.category }}</span></td>
                 <td>{{ formatDate(article.created_at) }}</td>
                 <td class="actions">
                   <button @click="editArticle(article)" class="btn-edit">✏️</button>
@@ -217,7 +228,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* This view now uses the global admin theme (admin.css). */
+/* This view now uses the global admin theme (admin.css) with a few local touches. */
 .header-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
-.articles-table thead { background: #f8f9fa; }
+.meta-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+.chip { padding: 0.35rem 0.85rem; border-radius: 999px; background: rgba(102,126,234,0.12); color: #4338ca; font-weight: 700; font-size: 0.85rem; }
+.chip.subtle { background: rgba(67,56,202,0.08); color: #312e81; }
+.pill { display: inline-flex; padding: 0.25rem 0.65rem; border-radius: 999px; background: rgba(99,102,241,0.1); color: #3730a3; font-weight: 700; font-size: 0.85rem; }
+.frosted-table thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+.frosted-table tbody tr:hover { background: rgba(102,126,234,0.08); }
+.ghost { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4); }
 </style>

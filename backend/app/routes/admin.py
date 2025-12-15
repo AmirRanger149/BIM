@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, case
 from typing import List, Optional
 from datetime import datetime, timedelta
 import shutil
@@ -476,6 +476,66 @@ def get_visit_summary(
     }
 
 
+@router.get("/visits/report")
+def get_visit_report(
+    days: int = 30,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """گزارش خلاقانه‌ی بازدیدها بر اساس مسیر و بخش‌های اصلی"""
+    # محدودسازی بازه برای جلوگیری از بار زیاد
+    window_days = max(1, min(days, 180))
+    now = datetime.utcnow()
+    cutoff = now - timedelta(days=window_days)
+
+    base_query = db.query(models.Visit).filter(models.Visit.created_at >= cutoff)
+
+    total = base_query.count()
+
+    per_day_rows = base_query.with_entities(
+        func.date(models.Visit.created_at).label("day"),
+        func.count().label("count")
+    ).group_by("day").order_by("day").all()
+    per_day = [{"day": row.day, "count": row.count} for row in per_day_rows]
+
+    top_paths_rows = base_query.with_entities(
+        models.Visit.path.label("path"),
+        func.count().label("count")
+    ).group_by(models.Visit.path).order_by(func.count().desc()).limit(8).all()
+    top_paths = [{"path": row.path or "نامشخص", "count": row.count} for row in top_paths_rows]
+
+    section_case = case(
+        (models.Visit.path.like('/articles%'), 'articles'),
+        (models.Visit.path.like('/gallery%'), 'gallery'),
+        (models.Visit.path.like('/services%'), 'services'),
+        (models.Visit.path.like('/contact%'), 'contacts'),
+        (models.Visit.path == '/', 'home'),
+        (models.Visit.path.like('/welcome%'), 'home'),
+        else_='other'
+    )
+
+    section_rows = base_query.with_entities(
+        section_case.label('section'),
+        func.count().label('count')
+    ).group_by('section').order_by(func.count().desc()).all()
+    by_section = [{"section": row.section, "count": row.count} for row in section_rows]
+
+    referer_rows = base_query.with_entities(
+        models.Visit.referer.label("referer"),
+        func.count().label("count")
+    ).filter(models.Visit.referer != None).filter(models.Visit.referer != '').group_by(models.Visit.referer).order_by(func.count().desc()).limit(6).all()
+    top_referers = [{"referer": row.referer, "count": row.count} for row in referer_rows]
+
+    return {
+        "range_days": window_days,
+        "total": total,
+        "per_day": per_day,
+        "top_paths": top_paths,
+        "by_section": by_section,
+        "top_referers": top_referers
+    }
+
+
 # ==================== خدمات ====================
 
 @router.get("/services", response_model=List[schemas.Service])
@@ -541,3 +601,83 @@ def delete_service_admin(
     db.delete(db_service)
     db.commit()
     return {"message": "Service deleted successfully"}
+
+
+# ==================== کاربران ====================
+
+@router.get("/users", response_model=List[schemas.User])
+def get_all_users_admin(
+    skip: int = 0,
+    limit: int = 200,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """دریافت همه کاربران (ادمین)"""
+    users = db.query(models.User).order_by(models.User.created_at.desc()).offset(skip).limit(limit).all()
+    return users
+
+
+@router.post("/users", response_model=schemas.User, status_code=201)
+def create_user_admin(
+    user: schemas.UserCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """ایجاد کاربر جدید (ادمین)"""
+    existing = db.query(models.User).filter(models.User.email == user.email).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="ایمیل تکراری است")
+
+    return auth.create_user(db, user, is_admin=user.is_admin if hasattr(user, "is_admin") else False)
+
+
+@router.put("/users/{user_id}", response_model=schemas.User)
+def update_user_admin(
+    user_id: int,
+    user: schemas.UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """ویرایش کاربر (ادمین)"""
+    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="کاربر یافت نشد")
+
+    # بررسی ایمیل تکراری
+    if user.email and user.email != db_user.email:
+        exists = db.query(models.User).filter(models.User.email == user.email).first()
+        if exists:
+            raise HTTPException(status_code=400, detail="ایمیل تکراری است")
+        db_user.email = user.email
+
+    if user.full_name is not None:
+        db_user.full_name = user.full_name
+
+    if user.is_active is not None:
+        db_user.is_active = user.is_active
+
+    if user.is_admin is not None:
+        db_user.is_admin = user.is_admin
+
+    if user.password:
+        db_user.hashed_password = auth.get_password_hash(user.password)
+
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+@router.delete("/users/{user_id}")
+def delete_user_admin(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """حذف کاربر (ادمین)"""
+    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="کاربر یافت نشد")
+
+    db.delete(db_user)
+    db.commit()
+    return {"success": True, "message": "کاربر حذف شد"}

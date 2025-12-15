@@ -1,14 +1,23 @@
 <template>
-  <div class="admin-gallery">
-    <div class="header-actions">
-      <button @click="showForm = true" class="btn-primary">
-        ➕ آیتم جدید
-      </button>
+  <div class="admin-gallery admin-page">
+    <div class="admin-section-header">
+      <div>
+        <div class="eyebrow">🎨 مدیریت گالری</div>
+        <h2>گالری پروژه‌ها</h2>
+        <p class="muted">افزودن و بروزرسانی آیتم‌های گالری و اسلایدر مرتبط</p>
+        <div class="meta-chips">
+          <span class="chip">{{ items.length }} آیتم</span>
+          <span class="chip subtle" v-if="sliders.length">{{ sliders.length }} اسلایدر</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button @click="showForm = true" class="btn-primary ghost">➕ آیتم جدید</button>
+      </div>
     </div>
 
     <!-- فرم افزودن/ویرایش -->
     <div v-if="showForm" class="modal-overlay" @click.self="closeForm">
-      <div class="modal-card">
+      <div class="modal-card admin-modal">
         <div class="modal-header">
           <h2>{{ editingId ? 'ویرایش آیتم' : 'آیتم جدید' }}</h2>
           <button @click="closeForm" class="close-btn">✕</button>
@@ -69,21 +78,24 @@
     </div>
 
     <!-- لیست گالری -->
-    <div class="gallery-list">
+    <div class="panel">
       <div v-if="loading" class="loading">در حال بارگذاری...</div>
       <div v-else-if="items.length === 0" class="empty">
         <p>هیچ آیتمی یافت نشد</p>
       </div>
-      <div v-else class="gallery-grid">
-        <div v-for="item in items" :key="item.id" class="gallery-card">
-          <div class="card-image">
+      <div v-else class="card-grid">
+        <div v-for="item in items" :key="item.id" class="card media-card glass-card">
+          <div class="media-image">
             <img v-if="item.image" :src="item.image" :alt="item.title" />
-            <div v-else class="no-image">{{ item.icon || '🎨' }}</div>
+            <div v-else class="media-placeholder">{{ item.icon || '🎨' }}</div>
           </div>
-          <div class="card-content">
-            <h3>{{ item.title }}</h3>
-            <p class="category">{{ item.category }}</p>
-            <p class="description">{{ item.description }}</p>
+          <div class="card-body">
+            <div class="card-title">{{ item.title }}</div>
+            <div class="card-sub">
+              <span class="pill">{{ item.category }}</span>
+              <span v-if="item.duration" class="pill subtle">⏱ {{ item.duration }}</span>
+            </div>
+            <p class="card-text">{{ item.description }}</p>
             <div class="card-actions">
               <button @click="editItem(item)" class="btn-edit">✏️ ویرایش</button>
               <button @click="deleteItem(item.id)" class="btn-delete">🗑️ حذف</button>
@@ -121,7 +133,7 @@ const loadItems = async () => {
     sliders.value = await adminService.getSliders()
   } catch (error) {
     console.error('Failed to load gallery items:', error)
-    alert('خطا در بارگذاری آیتم‌های گالری')
+    try { const { error: tError } = await import('../composables/useToast.js'); tError('خطا در بارگذاری آیتم‌های گالری'); } catch {}
   } finally {
     loading.value = false
   }
@@ -137,15 +149,15 @@ const submitForm = async () => {
   try {
     if (editingId.value) {
       await adminService.updateGalleryItem(editingId.value, formData.value)
-      alert('آیتم با موفقیت به‌روزرسانی شد')
+      try { const { success } = await import('../composables/useToast.js'); success('آیتم بروزرسانی شد'); } catch {}
     } else {
       await adminService.createGalleryItem(formData.value)
-      alert('آیتم با موفقیت ایجاد شد')
+      try { const { success } = await import('../composables/useToast.js'); success('آیتم ایجاد شد'); } catch {}
     }
     closeForm()
     await loadItems()
   } catch (error) {
-    alert('خطا: ' + (error.response?.data?.detail || 'عملیات ناموفق'))
+    try { const { error: tError } = await import('../composables/useToast.js'); tError(error.response?.data?.detail || 'خطا در ذخیره آیتم'); } catch {}
   }
 }
 
@@ -154,10 +166,10 @@ const deleteItem = async (id) => {
   
   try {
     await adminService.deleteGalleryItem(id)
-    alert('آیتم با موفقیت حذف شد')
+    try { const { success } = await import('../composables/useToast.js'); success('آیتم حذف شد'); } catch {}
     await loadItems()
   } catch (error) {
-    alert('خطا: ' + (error.response?.data?.detail || 'عملیات ناموفق'))
+    try { const { error: tError } = await import('../composables/useToast.js'); tError(error.response?.data?.detail || 'خطا در حذف آیتم'); } catch {}
   }
 }
 
@@ -172,7 +184,7 @@ const handleImageUpload = async (event) => {
     const response = await adminService.uploadFile(formDataFile)
     formData.value.image = response.url
   } catch (error) {
-    alert('خطا در آپلود تصویر: ' + (error.response?.data?.detail || 'عملیات ناموفق'))
+    try { const { error: tError } = await import('../composables/useToast.js'); tError(error.response?.data?.detail || 'خطا در آپلود تصویر'); } catch {}
   } finally {
     uploadingImage.value = false
   }
@@ -197,284 +209,18 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.admin-gallery {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
+.admin-gallery { display: flex; flex-direction: column; gap: 1.5rem; }
+.header-actions { display: flex; gap: 0.75rem; }
 
-.header-actions {
-  display: flex;
-  gap: 1rem;
-}
+.gallery-form { display: flex; flex-direction: column; gap: 1rem; padding: 1.25rem 1.5rem; }
+.file-input-group { display: flex; flex-direction: column; gap: 0.65rem; }
+.uploading-status { font-weight: 700; color: #4338ca; }
 
-.btn-primary {
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
-}
+.card-text { color: #4b5563; line-height: 1.6; }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-card {
-  background: white;
-  border-radius: 12px;
-  max-width: 600px;
-  width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.modal-header h2 {
-  margin: 0;
-  color: #2d3748;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #718096;
-}
-
-.gallery-form {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-group label {
-  font-weight: 600;
-  color: #2d3748;
-  font-size: 0.9rem;
-}
-
-.form-group input,
-.form-group textarea {
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-family: inherit;
-  font-size: 0.95rem;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.file-input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.file-input {
-  padding: 0.75rem;
-  border: 2px dashed #667eea;
-  border-radius: 6px;
-  cursor: pointer;
-  background: #f7fafc;
-  color: #2d3748;
-}
-
-.file-input:hover {
-  background: #edf2f7;
-}
-
-.uploading-status {
-  color: #667eea;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.btn-secondary {
-  padding: 0.75rem 1.5rem;
-  background: #e2e8f0;
-  color: #2d3748;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.btn-secondary:hover {
-  background: #cbd5e0;
-}
-
-.gallery-list {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: 2rem;
-}
-
-.loading,
-.empty {
-  text-align: center;
-  color: #718096;
-  padding: 2rem;
-}
-
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.gallery-card {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
-  transition: all 0.3s;
-}
-
-.gallery-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-}
-
-.card-image {
-  width: 100%;
-  height: 200px;
-  background: #f7fafc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.no-image {
-  font-size: 3rem;
-}
-
-.card-content {
-  padding: 1rem;
-}
-
-.card-content h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1rem;
-  color: #2d3748;
-}
-
-.category {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #667eea;
-  font-weight: 600;
-}
-
-.description {
-  margin: 0.5rem 0;
-  font-size: 0.85rem;
-  color: #718096;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.btn-edit,
-.btn-delete {
-  flex: 1;
-  padding: 0.5rem;
-  background: none;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.3s;
-}
-
-.btn-edit:hover {
-  background: #edf2f7;
-  border-color: #667eea;
-}
-
-.btn-delete:hover {
-  background: #fff5f5;
-  border-color: #e53e3e;
-}
+.form-actions { justify-content: flex-end; flex-wrap: wrap; }
 
 @media (max-width: 768px) {
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
-  .modal-card {
-    width: 95%;
-  }
-
-  .gallery-grid {
-    grid-template-columns: 1fr;
-  }
+  .header-actions { width: 100%; justify-content: flex-start; }
 }
 </style>

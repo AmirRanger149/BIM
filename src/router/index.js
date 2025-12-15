@@ -12,6 +12,8 @@ import AdminTestimonials from '../views/AdminTestimonials.vue'
 import AdminContacts from '../views/AdminContacts.vue'
 import AdminSliders from '../views/AdminSliders.vue'
 import AdminCertificates from '../views/AdminCertificates.vue'
+import AdminReports from '../views/AdminReports.vue'
+import AdminUsers from '../views/AdminUsers.vue'
 import AdminLayout from '../components/AdminLayout.vue'
 import { logVisit } from '../api/services'
 
@@ -64,6 +66,11 @@ const routes = [
         component: AdminDashboard
       },
       {
+        path: 'reports',
+        name: 'AdminReports',
+        component: AdminReports
+      },
+      {
         path: 'articles',
         name: 'AdminArticles',
         component: AdminArticles
@@ -92,6 +99,11 @@ const routes = [
         path: 'certificates',
         name: 'AdminCertificates',
         component: AdminCertificates
+      },
+      {
+        path: 'users',
+        name: 'AdminUsers',
+        component: AdminUsers
       },
       {
         path: 'services',

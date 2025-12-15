@@ -1,14 +1,23 @@
 <template>
-  <div class="admin-testimonials">
-    <div class="header-actions">
-      <button @click="showForm = true" class="btn-primary">
-        ➕ نظر جدید
-      </button>
+  <div class="admin-testimonials admin-page">
+    <div class="admin-section-header">
+      <div>
+        <div class="eyebrow">💬 بازخوردها</div>
+        <h2>نظر مشتریان</h2>
+        <p class="muted">مدیریت تایید، ویرایش و اضافه کردن نظرات جدید</p>
+        <div class="meta-chips">
+          <span class="chip">{{ testimonials.length }} نظر</span>
+          <span class="chip subtle">در انتظار تایید {{ pendingCount }}</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button @click="showForm = true" class="btn-primary">➕ نظر جدید</button>
+      </div>
     </div>
 
     <!-- فرم افزودن/ویرایش -->
     <div v-if="showForm" class="modal-overlay" @click.self="closeForm">
-      <div class="modal-card">
+      <div class="modal-card admin-modal">
         <div class="modal-header">
           <h2>{{ editingId ? 'ویرایش نظر' : 'نظر جدید' }}</h2>
           <button @click="closeForm" class="close-btn">✕</button>
@@ -64,14 +73,19 @@
     </div>
 
     <!-- لیست نظرات -->
-    <div class="testimonials-list">
+    <div class="panel">
       <div v-if="loading" class="loading">در حال بارگذاری...</div>
       <div v-else-if="testimonials.length === 0" class="empty">
         <p>هیچ نظری یافت نشد</p>
       </div>
       <div v-else>
-        <div class="testimonials-container">
-          <div v-for="testimonial in testimonials" :key="testimonial.id" class="testimonial-card" :class="{ pending: !testimonial.approved }">
+        <div class="testimonials-container scroll-area">
+          <div 
+            v-for="testimonial in testimonials" 
+            :key="testimonial.id" 
+            class="testimonial-card glass-card" 
+            :class="{ pending: !testimonial.approved }"
+          >
             <div class="testimonial-header">
               <div class="user-info">
                 <div class="avatar">{{ testimonial.avatar || '👤' }}</div>
@@ -97,7 +111,7 @@
               <button 
                 v-if="!testimonial.approved"
                 @click="approveTestimonial(testimonial.id)"
-                class="btn-approve"
+                class="btn-small"
               >
                 ✓ تایید
               </button>
@@ -113,8 +127,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { adminService } from '../api/services'
+import { success, error } from '../composables/useToast.js'
 
 const testimonials = ref([])
 const loading = ref(false)
@@ -131,13 +146,15 @@ const formData = ref({
   avatar: '👤'
 })
 
+const pendingCount = computed(() => testimonials.value.filter(t => !t.approved).length)
+
 const loadTestimonials = async () => {
   loading.value = true
   try {
     testimonials.value = await adminService.getTestimonials()
   } catch (error) {
     console.error('Failed to load testimonials:', error)
-    alert('خطا در بارگذاری نظرات')
+    notifyError('خطا در بارگذاری نظرات')
   } finally {
     loading.value = false
   }
@@ -153,25 +170,25 @@ const submitForm = async () => {
   try {
     if (editingId.value) {
       await adminService.updateTestimonial(editingId.value, formData.value)
-      alert('نظر با موفقیت به‌روزرسانی شد')
+      notifySuccess('نظر به‌روزرسانی شد')
     } else {
       await adminService.createTestimonial(formData.value)
-      alert('نظر با موفقیت ایجاد شد')
+      notifySuccess('نظر ایجاد شد')
     }
     closeForm()
     await loadTestimonials()
   } catch (error) {
-    alert('خطا: ' + (error.response?.data?.detail || 'عملیات ناموفق'))
+    notifyError(error.response?.data?.detail || 'عملیات ناموفق')
   }
 }
 
 const approveTestimonial = async (id) => {
   try {
     await adminService.approveTestimonial(id)
-    alert('نظر تایید شد')
+    notifySuccess('نظر تایید شد')
     await loadTestimonials()
   } catch (error) {
-    alert('خطا: ' + (error.response?.data?.detail || 'عملیات ناموفق'))
+    notifyError(error.response?.data?.detail || 'عملیات ناموفق')
   }
 }
 
@@ -180,10 +197,10 @@ const deleteTestimonial = async (id) => {
   
   try {
     await adminService.deleteTestimonial(id)
-    alert('نظر با موفقیت حذف شد')
+    notifySuccess('نظر حذف شد')
     await loadTestimonials()
   } catch (error) {
-    alert('خطا: ' + (error.response?.data?.detail || 'عملیات ناموفق'))
+    notifyError(error.response?.data?.detail || 'عملیات ناموفق')
   }
 }
 
@@ -198,7 +215,7 @@ const handleImageUpload = async (event) => {
     const response = await adminService.uploadFile(formDataFile)
     formData.value.image = response.url
   } catch (error) {
-    alert('خطا در آپلود تصویر: ' + (error.response?.data?.detail || 'عملیات ناموفق'))
+    notifyError(error.response?.data?.detail || 'خطا در آپلود تصویر')
   } finally {
     uploadingImage.value = false
   }
@@ -221,325 +238,33 @@ const closeForm = () => {
 onMounted(() => {
   loadTestimonials()
 })
+
+const notifySuccess = (message) => {
+  try { success(message) } catch (err) { console.error(message, err) }
+}
+
+const notifyError = (message) => {
+  try { error(message) } catch (err) { console.error(message, err) }
+}
 </script>
 
 <style scoped>
-.admin-testimonials {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.header-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.btn-primary {
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-card {
-  background: white;
-  border-radius: 12px;
-  max-width: 600px;
-  width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.modal-header h2 {
-  margin: 0;
-  color: #2d3748;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #718096;
-}
-
-.testimonial-form {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-group label {
-  font-weight: 600;
-  color: #2d3748;
-  font-size: 0.9rem;
-}
-
-.form-group input,
-.form-group textarea {
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-family: inherit;
-  font-size: 0.95rem;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  color: #2d3748;
-}
-
-.file-input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.file-input {
-  padding: 0.75rem;
-  border: 2px dashed #667eea;
-  border-radius: 6px;
-  cursor: pointer;
-  background: #f7fafc;
-  color: #2d3748;
-}
-
-.file-input:hover {
-  background: #edf2f7;
-}
-
-.uploading-status {
-  color: #667eea;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.btn-secondary {
-  padding: 0.75rem 1.5rem;
-  background: #e2e8f0;
-  color: #2d3748;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.btn-secondary:hover {
-  background: #cbd5e0;
-}
-
-.testimonials-list {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: 2rem;
-}
-
-.loading,
-.empty {
-  text-align: center;
-  color: #718096;
-  padding: 2rem;
-}
-
-.testimonials-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.testimonial-card {
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 1.5rem;
-  background: white;
-  transition: all 0.3s;
-}
-
-.testimonial-card:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.testimonial-card.pending {
-  background: #fffaf0;
-  border-color: #fbd38d;
-}
-
-.testimonial-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  margin-bottom: 1rem;
-}
-
-.user-info {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.avatar {
-  font-size: 2rem;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f7fafc;
-  border-radius: 50%;
-}
-
-.info h3 {
-  margin: 0;
-  color: #2d3748;
-  font-size: 1rem;
-}
-
-.info p {
-  margin: 0.25rem 0 0 0;
-  color: #718096;
-  font-size: 0.9rem;
-}
-
-.rating {
-  display: flex;
-  gap: 0.25rem;
-}
-
-.testimonial-text {
-  color: #4a5568;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
-
-.project-tag {
-  display: inline-block;
-  background: #edf2f7;
-  color: #667eea;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
-}
-
-.testimonial-actions {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.btn-approve,
-.btn-edit,
-.btn-delete {
-  padding: 0.5rem 0.75rem;
-  background: none;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.3s;
-}
-
-.btn-approve {
-  background: #c6f6d5;
-  border-color: #9ae6b4;
-  color: #22543d;
-}
-
-.btn-approve:hover {
-  background: #9ae6b4;
-}
-
-.btn-edit:hover {
-  background: #edf2f7;
-  border-color: #667eea;
-}
-
-.btn-delete:hover {
-  background: #fff5f5;
-  border-color: #e53e3e;
-}
-
-.approved-badge {
-  color: #22863a;
-  background: #f0f8f4;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
+.admin-testimonials { display: flex; flex-direction: column; gap: 1.5rem; }
+.header-actions { display: flex; align-items: center; gap: 0.75rem; }
+.testimonials-container { display: grid; gap: 1rem; }
+.testimonial-card { padding: 1.25rem; border-radius: 14px; border: 1px solid rgba(226,232,240,0.9); transition: transform 0.2s ease, box-shadow 0.25s ease; }
+.testimonial-card.pending { border-left: 4px solid #fb923c; background: linear-gradient(135deg, rgba(255,247,237,0.9), rgba(255,255,255,0.96)); }
+.testimonial-header { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; margin-bottom: 0.75rem; }
+.user-info { display: flex; gap: 0.9rem; align-items: center; }
+.avatar { width: 52px; height: 52px; font-size: 1.6rem; background: linear-gradient(135deg, #eef2ff, #f5f3ff); color: #4338ca; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+.info h3 { margin: 0; font-size: 1.05rem; color: #0f172a; }
+.info p { margin: 0.15rem 0 0; color: #6b7280; font-weight: 600; }
+.rating { display: flex; gap: 0.15rem; font-size: 1.05rem; }
+.testimonial-text { color: #374151; line-height: 1.7; margin: 0 0 0.75rem; }
+.project-tag { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.3rem 0.75rem; border-radius: 999px; background: rgba(102,126,234,0.12); color: #4338ca; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.75rem; }
+.testimonial-actions { display: flex; gap: 0.45rem; align-items: center; flex-wrap: wrap; }
+.approved-badge { background: #d1fae5; color: #065f46; padding: 0.45rem 0.85rem; border-radius: 10px; font-weight: 800; font-size: 0.85rem; }
 @media (max-width: 768px) {
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
-  .modal-card {
-    width: 95%;
-  }
-
-  .testimonial-header {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .testimonial-actions {
-    flex-wrap: wrap;
-  }
+  .testimonial-header { flex-direction: column; align-items: flex-start; }
 }
 </style>
