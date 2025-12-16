@@ -38,6 +38,8 @@ def get_comment_stats(
     }
 
 
+# Register both /api/comments and /api/comments/ routes
+@router.get("", response_model=List[CommentSchema])
 @router.get("/", response_model=List[CommentSchema])
 def get_comments(
     content_type: Optional[str] = Query(None, pattern="^(article|project)$"),
@@ -77,6 +79,7 @@ def get_comment(comment_id: int, db: Session = Depends(get_db)):
     return comment
 
 
+@router.post("", response_model=CommentSchema, status_code=201)
 @router.post("/", response_model=CommentSchema, status_code=201)
 def create_comment(comment: CommentCreate, db: Session = Depends(get_db)):
     """ایجاد نظر جدید (نیاز به تایید ادمین)"""

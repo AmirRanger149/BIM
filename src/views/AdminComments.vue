@@ -49,7 +49,7 @@
 
     <!-- جدول نظرات -->
     <div class="table-container">
-      <table v-if="!loading && comments.length > 0">
+      <table v-if="!loading && filteredComments.length > 0">
         <thead>
           <tr>
             <th>شناسه</th>
@@ -64,7 +64,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="comment in comments" :key="comment.id">
+          <tr v-for="comment in filteredComments" :key="comment.id">
             <td>{{ comment.id }}</td>
             <td>{{ comment.name }}</td>
             <td>{{ comment.email }}</td>
@@ -125,8 +125,10 @@
       </div>
 
       <!-- Empty State -->
-      <div v-if="!loading && comments.length === 0" class="empty-state">
-        <p>نظری یافت نشد</p>
+      <div v-if="!loading && filteredComments.length === 0" class="empty-state">
+        <p>
+          {{ comments.length === 0 ? 'نظری یافت نشد' : 'هیچ نظری با فیلتر انتخاب شده وجود ندارد' }}
+        </p>
       </div>
     </div>
 
@@ -941,29 +943,220 @@ tr:hover {
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .comment-content {
+    max-width: 150px;
+  }
+
+  th, td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+  }
+}
+
 @media (max-width: 768px) {
   .admin-comments {
     padding: 1rem;
   }
 
+  .header h2 {
+    font-size: 1.5rem;
+  }
+
   .stats-summary {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+
+  .filter-group {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-group select {
+    width: 100%;
+  }
+
+  .btn-refresh {
+    width: 100%;
   }
 
   .table-container {
     overflow-x: auto;
+    border-radius: 8px;
   }
 
   table {
-    min-width: 800px;
+    min-width: 100%;
+    font-size: 0.75rem;
+  }
+
+  th, td {
+    padding: 0.5rem;
+  }
+
+  .comment-content {
+    max-width: 80px;
+    word-break: break-word;
+  }
+
+  .view-more {
+    display: block;
+    margin-top: 0.25rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .btn-action {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    font-size: 0.875rem;
   }
 
   .detail-row {
     grid-template-columns: 1fr;
   }
 
+  .modal-content {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
   .modal-actions {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-comments {
+    padding: 0.5rem;
+  }
+
+  .header h2 {
+    font-size: 1.25rem;
+  }
+
+  .stats-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .filters {
+    gap: 0.5rem;
+  }
+
+  .filter-group {
+    gap: 0.25rem;
+  }
+
+  .filter-group select {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .btn-refresh {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .table-container {
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  }
+
+  table {
+    font-size: 0.65rem;
+  }
+
+  th {
+    padding: 0.4rem 0.3rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  td {
+    padding: 0.3rem;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .comment-content {
+    max-width: 50px;
+  }
+
+  .rating-number {
+    display: none;
+  }
+
+  .stars {
+    font-size: 0.75rem;
+  }
+
+  .badge {
+    padding: 0.1rem 0.5rem;
+    font-size: 0.65rem;
+  }
+
+  .status-badge {
+    padding: 0.1rem 0.5rem;
+    font-size: 0.65rem;
+  }
+
+  .date-cell {
+    font-size: 0.65rem;
+  }
+
+  .btn-action {
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+  }
+
+  .modal-content {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .modal-close {
+    width: 28px;
+    height: 28px;
+    font-size: 1.25rem;
+  }
+
+  .detail-row {
+    gap: 0.5rem;
+  }
+
+  .detail-row strong {
+    min-width: 60px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px;
   }
 }
 </style>
