@@ -52,32 +52,7 @@
             {{ project.category }}
           </div>
           <h1 class="project-title" itemprop="name">{{ project.title }}</h1>
-          <p class="project-description" itemprop="description">{{ project.description || project.summary }}</p>
-          
-          <div class="project-meta" v-if="project.created_at || project.location || project.client || project.area">
-            <div class="meta-item" v-if="project.created_at">
-              <span class="meta-icon">📅</span>
-              <span class="meta-label">تاریخ:</span>
-              <time :datetime="project.created_at || project.date" itemprop="dateCreated">
-                {{ formatDate(project.created_at || project.date) }}
-              </time>
-            </div>
-            <div class="meta-item" v-if="project.location">
-              <span class="meta-icon">📍</span>
-              <span class="meta-label">موقعیت:</span>
-              <span itemprop="locationCreated">{{ project.location }}</span>
-            </div>
-            <div class="meta-item" v-if="project.client">
-              <span class="meta-icon">👤</span>
-              <span class="meta-label">کارفرما:</span>
-              <span>{{ project.client }}</span>
-            </div>
-            <div class="meta-item" v-if="project.area">
-              <span class="meta-icon">📐</span>
-              <span class="meta-label">مساحت:</span>
-              <span>{{ project.area }}</span>
-            </div>
-          </div>
+          <p class="project-description" itemprop="description">{{ project.description }}</p>
         </div>
       </header>
 
@@ -137,8 +112,7 @@
               <h2>درباره پروژه</h2>
               <div class="project-text" itemprop="text">
                 <div v-if="project.full_description" v-html="project.full_description"></div>
-                <div v-else-if="project.description"><p>{{ project.description }}</p></div>
-                <div v-else><p>{{ project.summary }}</p></div>
+                <p v-else>{{ project.description }}</p>
               </div>
               
               <!-- Technologies Used -->

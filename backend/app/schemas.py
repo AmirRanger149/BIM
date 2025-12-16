@@ -58,6 +58,7 @@ class Article(ArticleBase):
 class GalleryItemBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=255)
     description: str
+    full_description: Optional[str] = None  # توضیح کامل با HTML
     icon: str = "🎨"
     gradient: Optional[str] = None
     image: Optional[str] = None  # تصویر شاخص
@@ -76,6 +77,7 @@ class GalleryItemCreate(GalleryItemBase):
 class GalleryItemUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
+    full_description: Optional[str] = None  # توضیح کامل با HTML
     icon: Optional[str] = None
     gradient: Optional[str] = None
     image: Optional[str] = None

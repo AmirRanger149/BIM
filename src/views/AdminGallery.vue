@@ -43,10 +43,22 @@
 
           <!-- Row 3: Description with Quill Editor -->
           <div class="form-group full">
-            <label>توضیح تفصیلی</label>
+            <label>توضیح خلاصه</label>
             <div class="editor-container">
               <QuillEditor
                 v-model:content="formData.description"
+                theme="snow"
+                content-type="html"
+              />
+            </div>
+          </div>
+
+          <!-- Row 3.5: Full Description with Quill Editor -->
+          <div class="form-group full">
+            <label>توضیح کامل (برای صفحه جزئیات)</label>
+            <div class="editor-container">
+              <QuillEditor
+                v-model:content="formData.full_description"
                 theme="snow"
                 content-type="html"
               />
@@ -138,6 +150,7 @@ const uploadingImage = ref(false)
 const formData = ref({
   title: '',
   description: '',
+  full_description: '',
   category: '',
   image: '',
   slider_id: null,
@@ -214,6 +227,7 @@ const closeForm = () => {
   formData.value = {
     title: '',
     description: '',
+    full_description: '',
     category: '',
     image: '',
     slider_id: null,

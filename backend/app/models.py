@@ -35,6 +35,7 @@ class GalleryItem(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False)
     description = Column(Text, nullable=False)
+    full_description = Column(Text, nullable=True)  # توضیح کامل با HTML
     icon = Column(String(10), default="🎨")
     gradient = Column(String(255))
     # تصاویر
