@@ -598,6 +598,11 @@ const previousItem = () => {
   color: #6c757d;
   margin-bottom: 1rem;
   flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dark-mode .card-description {
