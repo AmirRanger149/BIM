@@ -94,13 +94,25 @@ uploads_dir.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
 # Mount Vue.js built frontend
-frontend_dist = Path(__file__).parent.parent / "dist"
-if frontend_dist.exists():
+# Try two locations: /app/dist (Docker) and ../dist (local development)
+frontend_dist = None
+possible_paths = [
+    Path(__file__).parent / "dist",  # In Docker: /app/dist
+    Path(__file__).parent.parent / "dist"  # Local dev: /workspaces/BIM/dist
+]
+
+for path in possible_paths:
+    if path.exists():
+        frontend_dist = path
+        print(f"✅ Frontend dist found at: {path}")
+        break
+
+if frontend_dist:
     # Mount assets (JS, CSS, etc.)
     app.mount("/assets", StaticFiles(directory=str(frontend_dist / "assets")), name="assets")
     print(f"✅ Frontend assets mounted from {frontend_dist / 'assets'}")
 else:
-    print(f"⚠️  Frontend dist folder not found at {frontend_dist}")
+    print(f"⚠️  Frontend dist folder not found")
     print("Run 'npm run build' in the project root to build the frontend")
 
 # Include Routers
@@ -115,33 +127,41 @@ app.include_router(comments.router)
 @app.get("/")
 def root():
     """Root endpoint - serve frontend or API info"""
-    frontend_dist = Path(__file__).parent.parent / "dist"
-    index_file = frontend_dist / "index.html"
+    # Try two locations: /app/dist (Docker) and ../dist (local development)
+    possible_paths = [
+        Path(__file__).parent / "dist",  # In Docker: /app/dist
+        Path(__file__).parent.parent / "dist"  # Local dev: /workspaces/BIM/dist
+    ]
     
-    if index_file.exists():
-        # Serve the Vue.js frontend
-        from fastapi.responses import FileResponse
-        return FileResponse(str(index_file), media_type="text/html")
-    else:
-        # Fallback to API info
-        return {
-            "message": "Welcome to BIM Backend API",
-            "version": settings.VERSION,
-            "docs": "/docs",
-            "redoc": "/redoc",
-            "frontend": "Not built - run 'npm run build'"
-        }
+    for path in possible_paths:
+        index_file = path / "index.html"
+        if index_file.exists():
+            from fastapi.responses import FileResponse
+            return FileResponse(str(index_file), media_type="text/html")
+    
+    # Fallback to API info
+    return {
+        "message": "Welcome to BIM Backend API",
+        "version": settings.VERSION,
+        "docs": "/docs",
+        "redoc": "/redoc",
+        "frontend": "Not built - run 'npm run build'"
+    }
 
 
 @app.get("/favicon.ico")
 def favicon():
     """Serve favicon"""
     from fastapi.responses import FileResponse
-    frontend_dist = Path(__file__).parent.parent / "dist"
-    favicon_file = frontend_dist / "favicon.ico"
+    possible_paths = [
+        Path(__file__).parent / "dist",  # In Docker: /app/dist
+        Path(__file__).parent.parent / "dist"  # Local dev: /workspaces/BIM/dist
+    ]
     
-    if favicon_file.exists():
-        return FileResponse(str(favicon_file))
+    for path in possible_paths:
+        favicon_file = path / "favicon.ico"
+        if favicon_file.exists():
+            return FileResponse(str(favicon_file))
     
     # Return a 404 for favicon if not found
     from fastapi import HTTPException
@@ -152,11 +172,19 @@ def favicon():
 def robots():
     """Serve robots.txt for SEO"""
     from fastapi.responses import FileResponse
-    frontend_dist = Path(__file__).parent.parent / "dist"
-    robots_file = frontend_dist / "robots.txt"
+    possible_paths = [
+        Path(__file__).parent / "dist",  # In Docker: /app/dist
+        Path(__file__).parent.parent / "dist"  # Local dev: /workspaces/BIM/dist
+    ]
     
-    if robots_file.exists():
-        return FileResponse(str(robots_file), media_type="text/plain")
+    for path in possible_paths:
+        robots_file = path / "robots.txt"
+        if robots_file.exists():
+            return FileResponse(str(robots_file), media_type="text/plain")
+    
+    # Return a 404 if robots.txt not found
+    from fastapi import HTTPException
+    raise HTTPException(status_code=404)
     
     # Return a simple robots.txt if file not found
     from fastapi.responses import PlainTextResponse
@@ -367,15 +395,19 @@ def serve_spa(full_path: str):
         raise HTTPException(status_code=404, detail="Not Found")
     
     # Serve index.html for SPA routing (client-side routing)
-    frontend_dist = Path(__file__).parent.parent / "dist"
-    index_file = frontend_dist / "index.html"
+    possible_paths = [
+        Path(__file__).parent / "dist",  # In Docker: /app/dist
+        Path(__file__).parent.parent / "dist"  # Local dev: /workspaces/BIM/dist
+    ]
     
-    if index_file.exists():
-        from fastapi.responses import FileResponse
-        return FileResponse(str(index_file), media_type="text/html")
-    else:
-        from fastapi import HTTPException
-        raise HTTPException(status_code=404, detail="Frontend not built - run 'npm run build'")
+    for path in possible_paths:
+        index_file = path / "index.html"
+        if index_file.exists():
+            from fastapi.responses import FileResponse
+            return FileResponse(str(index_file), media_type="text/html")
+    
+    from fastapi import HTTPException
+    raise HTTPException(status_code=404, detail="Frontend not built - run 'npm run build'")
 
 
 if __name__ == "__main__":
