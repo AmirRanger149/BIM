@@ -19,6 +19,8 @@ import AdminComments from '../views/AdminComments.vue'
 import AdminVideos from '../views/AdminVideos.vue'
 import AdminReports from '../views/AdminReports.vue'
 import AdminUsers from '../views/AdminUsers.vue'
+import AdminSettings from '../views/AdminSettings.vue'
+import AdminHeroSliders from '../views/AdminHeroSliders.vue'
 import AdminLayout from '../components/AdminLayout.vue'
 import { logVisit } from '../api/services'
 
@@ -164,6 +166,16 @@ const routes = [
         path: 'services',
         name: 'AdminServices',
         component: () => import('../views/AdminServices.vue')
+      },
+      {
+        path: 'settings',
+        name: 'AdminSettings',
+        component: AdminSettings
+      },
+      {
+        path: 'hero-sliders',
+        name: 'AdminHeroSliders',
+        component: AdminHeroSliders
       }
     ]
   }

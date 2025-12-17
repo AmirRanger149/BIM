@@ -376,6 +376,20 @@ def create_sample_data(db: Session):
         cert = models.Certificate(**cert_data)
         db.add(cert)
     
+    # اسلایدر نمونه برای هدر/قهرمان صفحه
+    slider_count = db.query(models.Slider).count()
+    if slider_count == 0:
+        hero_slider = models.Slider(
+            name="Hero",
+            description="Default hero slider generated on first run",
+            images=[
+                "https://picsum.photos/id/1015/1600/900",
+                "https://picsum.photos/id/1016/1600/900",
+                "https://picsum.photos/id/1025/1600/900"
+            ]
+        )
+        db.add(hero_slider)
+    
     db.commit()
     print("✅ Sample data created successfully")
 

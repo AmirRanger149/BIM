@@ -140,6 +140,14 @@ def get_slider(slider_id: int, db: Session = Depends(get_db)):
     return {"data": slider_data}
 
 
+@router.get("/sliders", response_model=dict)
+def list_sliders(db: Session = Depends(get_db)):
+    """دریافت لیست تمام اسلایدرها (برای نمایش در بخش‌های عمومی مثل هدر)"""
+    sliders = db.query(models.Slider).order_by(models.Slider.created_at.desc()).all()
+    sliders_data = [schemas.Slider.from_orm(s) for s in sliders]
+    return {"data": sliders_data}
+
+
 @router.get("/services", response_model=dict)
 def get_services(db: Session = Depends(get_db)):
     """دریافت خدمات فعال"""

@@ -214,3 +214,13 @@ class Video(Base):
     order = Column(Integer, default=0)  # ترتیب نمایش
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+class Settings(Base):
+    """مدل تنظیمات عمومی سایت"""
+    __tablename__ = "settings"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    key = Column(String(100), unique=True, nullable=False, index=True)  # مثل: logo, favicon, site_name
+    value = Column(Text, nullable=True)  # مقدار (URL یا متن)
+    description = Column(Text, nullable=True)  # توضیح
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())

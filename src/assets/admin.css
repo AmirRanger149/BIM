@@ -18,6 +18,15 @@
   --admin-glow: 0 10px 30px rgba(102,126,234,0.25);
 }
 
+/* Base font */
+* {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
 /* NProgress top bar (thin & zesty) */
 #nprogress .bar { background: linear-gradient(90deg, #667eea, #f5576c); height: 3px; box-shadow: 0 0 10px rgba(102,126,234,0.6); }
 #nprogress .peg { box-shadow: 0 0 10px rgba(245,87,108,0.6), 0 0 5px rgba(102,126,234,0.4); }

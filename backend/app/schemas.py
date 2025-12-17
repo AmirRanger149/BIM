@@ -52,6 +52,29 @@ class Article(ArticleBase):
     class Config:
         from_attributes = True
 
+# ============= Settings Schemas =============
+
+class SettingsBase(BaseModel):
+    key: str = Field(..., min_length=1, max_length=100)
+    value: Optional[str] = None
+    description: Optional[str] = None
+
+
+class SettingsCreate(SettingsBase):
+    pass
+
+
+class SettingsUpdate(BaseModel):
+    value: Optional[str] = None
+    description: Optional[str] = None
+
+
+class Settings(SettingsBase):
+    id: int
+    updated_at: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
 
 # ============= Gallery Schemas =============
 

@@ -681,3 +681,86 @@ def delete_user_admin(
     db.delete(db_user)
     db.commit()
     return {"success": True, "message": "کاربر حذف شد"}
+
+# ==================== تنظیمات عمومی ====================
+
+@router.get("/settings", response_model=List[schemas.Settings])
+def get_all_settings(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """دریافت تمام تنظیمات"""
+    settings = db.query(models.Settings).all()
+    return settings
+
+
+@router.get("/settings/{key}", response_model=schemas.Settings)
+def get_setting(
+    key: str,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """دریافت تنظیم خاص"""
+    setting = db.query(models.Settings).filter(models.Settings.key == key).first()
+    if not setting:
+        raise HTTPException(status_code=404, detail="تنظیم یافت نشد")
+    return setting
+
+
+@router.post("/settings", response_model=schemas.Settings, status_code=201)
+def create_setting(
+    setting: schemas.SettingsCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """ایجاد تنظیم جدید"""
+    # بررسی تکراری بودن key
+    existing = db.query(models.Settings).filter(models.Settings.key == setting.key).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="این کلید قبلاً وجود دارد")
+    
+    db_setting = models.Settings(**setting.dict())
+    db.add(db_setting)
+    db.commit()
+    db.refresh(db_setting)
+    return db_setting
+
+
+@router.put("/settings/{key}", response_model=schemas.Settings)
+def update_setting(
+    key: str,
+    setting: schemas.SettingsUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """ویرایش تنظیم"""
+    db_setting = db.query(models.Settings).filter(models.Settings.key == key).first()
+    if not db_setting:
+        # اگر وجود نداشت، یک تنظیم جدید ایجاد کن
+        db_setting = models.Settings(key=key, value=setting.value, description=setting.description)
+        db.add(db_setting)
+    else:
+        if setting.value is not None:
+            db_setting.value = setting.value
+        if setting.description is not None:
+            db_setting.description = setting.description
+    
+    db.commit()
+    db.refresh(db_setting)
+    return db_setting
+
+
+@router.delete("/settings/{key}")
+def delete_setting(
+    key: str,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """حذف تنظیم"""
+    db_setting = db.query(models.Settings).filter(models.Settings.key == key).first()
+    if not db_setting:
+        raise HTTPException(status_code=404, detail="تنظیم یافت نشد")
+    
+    db.delete(db_setting)
+    db.commit()
+    return {"success": True, "message": "تنظیم حذف شد"}

@@ -38,6 +38,20 @@ export const getSlider = async (sliderId) => {
   }
 }
 
+/**
+ * دریافت تمام اسلایدرها (عمومی)
+ * @returns {Promise<Object>} { data: [sliders...] }
+ */
+export const getSliders = async () => {
+  try {
+    const response = await apiClient.get('/api/sliders')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching sliders:', error)
+    return { data: [] }
+  }
+}
+
 // ============= ARTICLES API =============
 
 /**
@@ -694,6 +708,73 @@ export const deleteAdminUser = async (id) => {
   return response.data
 }
 
+// ============= SETTINGS API =============
+
+/**
+ * دریافت تمام تنظیمات (ادمین)
+ */
+export const getAdminSettings = async () => {
+  try {
+    const response = await apiClient.get('/api/admin/settings')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching settings:', error)
+    return []
+  }
+}
+
+/**
+ * دریافت یک تنظیم خاص (ادمین)
+ */
+export const getAdminSetting = async (key) => {
+  try {
+    const response = await apiClient.get(`/api/admin/settings/${key}`)
+    return response.data
+  } catch (error) {
+    console.error(`Error fetching setting ${key}:`, error)
+    return null
+  }
+}
+
+/**
+ * ایجاد تنظیم جدید (ادمین)
+ */
+export const createAdminSetting = async (settingData) => {
+  try {
+    const response = await apiClient.post('/api/admin/settings', settingData)
+    return response.data
+  } catch (error) {
+    console.error('Error creating setting:', error)
+    throw error
+  }
+}
+
+/**
+ * بروزرسانی تنظیم (ادمین)
+ */
+export const updateAdminSetting = async (key, value) => {
+  try {
+    const response = await apiClient.put(`/api/admin/settings/${key}`, { value })
+    return response.data
+  } catch (error) {
+    console.error(`Error updating setting ${key}:`, error)
+    throw error
+  }
+}
+
+/**
+ * حذف تنظیم (ادمین)
+ */
+export const deleteAdminSetting = async (key) => {
+  try {
+    const response = await apiClient.delete(`/api/admin/settings/${key}`)
+    return response.data
+  } catch (error) {
+    console.error(`Error deleting setting ${key}:`, error)
+    throw error
+  }
+}
+
 // Export admin service
 export const adminService = {
   login: adminLogin,
@@ -738,7 +819,14 @@ export const adminService = {
   getServices: getAdminServices,
   createService: createAdminService,
   updateService: updateAdminService,
-  deleteService: deleteAdminService
+  deleteService: deleteAdminService,
+  
+  // Settings
+  getSettings: getAdminSettings,
+  getSetting: getAdminSetting,
+  createSetting: createAdminSetting,
+  updateSetting: updateAdminSetting,
+  deleteSetting: deleteAdminSetting
 }
 
 // ============= COMMENTS API =============

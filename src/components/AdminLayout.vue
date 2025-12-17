@@ -36,6 +36,9 @@
         <router-link to="/admin/sliders" class="nav-item" :class="{ active: isActive('sliders') }" @click="closeSidebar">
           🎬 اسلایدرها
         </router-link>
+        <router-link to="/admin/hero-sliders" class="nav-item" :class="{ active: isActive('hero-sliders') }" @click="closeSidebar">
+          🏠 Hero Sliders
+        </router-link>
         <router-link to="/admin/certificates" class="nav-item" :class="{ active: isActive('certificates') }" @click="closeSidebar">
           📜 گواهینامه‌ها
         </router-link>
@@ -47,6 +50,9 @@
         </router-link>
         <router-link to="/admin/services" class="nav-item" :class="{ active: isActive('services') }" @click="closeSidebar">
           🎯 خدمات
+        </router-link>
+        <router-link to="/admin/settings" class="nav-item" :class="{ active: isActive('settings') }" @click="closeSidebar">
+          ⚙️ تنظیمات
         </router-link>
       </nav>
       <div class="sidebar-footer">
@@ -90,9 +96,11 @@ const pageTitle = computed(() => {
     'AdminContacts': '📧 پیام‌های تماس',
     'AdminUsers': '👤 کاربران',
     'AdminSliders': '🎬 اسلایدرها',
+    'AdminHeroSliders': '🏠 Hero Sliders',
     'AdminCertificates': '📜 گواهینامه‌ها و استانداردها',
     'AdminComments': '💬 نظرات و امتیازات',
-    'AdminVideos': '🎥 ویدیوها'
+    'AdminVideos': '🎥 ویدیوها',
+    'AdminSettings': '⚙️ تنظیمات'
   }
   return titles[route.name] || 'پنل مدیریت'
 })
