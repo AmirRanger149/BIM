@@ -48,6 +48,9 @@ class GalleryItem(Base):
     views = Column(Integer, default=0)
     comments = Column(Integer, default=0)
     technologies = Column(JSON)  # لیست تکنولوژی‌ها
+    # مدل 3D
+    model_url = Column(String(500), nullable=True)  # URL فایل مدل 3D (GLTF, GLB, OBJ)
+    model_type = Column(String(20), default='auto')  # نوع مدل: gltf, glb, obj, auto
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 

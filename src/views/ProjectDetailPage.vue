@@ -103,6 +103,21 @@
         </div>
       </section>
       
+      <!-- 3D Model Viewer -->
+      <section class="project-3d-viewer" v-if="project.model_url">
+        <div class="container">
+          <h2>مدل سه‌بعدی پروژه</h2>
+          <div class="viewer-wrapper">
+            <Viewer3D
+              :modelUrl="project.model_url"
+              :modelType="project.model_type || 'auto'"
+              :autoRotate="true"
+              backgroundColor="#f5f5f5"
+            />
+          </div>
+        </div>
+      </section>
+      
       <!-- Project Details -->
       <section class="project-details">
         <div class="container">
@@ -294,6 +309,7 @@ import { ref, computed, inject, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getGalleryItem, getGalleryItems, getSlider } from '../api/services'
 import ImageSlider from '../components/ImageSlider.vue'
+import Viewer3D from '../components/Viewer3D.vue'
 import Navbar from '../components/Navbar.vue'
 import Footer from '../components/Footer.vue'
 import CommentSection from '../components/CommentSection.vue'
@@ -1228,6 +1244,54 @@ const getStatusText = (status) => {
   
   .related-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* 3D Viewer Section */
+.project-3d-viewer {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #f0f4f9 100%);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .project-3d-viewer {
+  background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.project-3d-viewer h2 {
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 2rem;
+  color: var(--primary);
+}
+
+.viewer-wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+  border-radius: var(--border-radius, 12px);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.dark-mode .viewer-wrapper {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .project-3d-viewer {
+    padding: 2rem 0;
+  }
+  
+  .project-3d-viewer h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .viewer-wrapper {
+    border-radius: 8px;
   }
 }
 </style>

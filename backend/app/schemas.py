@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from typing import Optional, List
 from datetime import datetime
 
@@ -79,6 +79,8 @@ class Settings(SettingsBase):
 # ============= Gallery Schemas =============
 
 class GalleryItemBase(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+    
     title: str = Field(..., min_length=1, max_length=255)
     description: str
     full_description: Optional[str] = None  # توضیح کامل با HTML
@@ -91,6 +93,8 @@ class GalleryItemBase(BaseModel):
     date: Optional[str] = None
     duration: Optional[str] = None
     technologies: List[str] = []
+    model_url: Optional[str] = None  # URL فایل مدل 3D
+    model_type: str = "auto"  # نوع مدل: gltf, glb, obj, auto
 
 
 class GalleryItemCreate(GalleryItemBase):
@@ -110,6 +114,8 @@ class GalleryItemUpdate(BaseModel):
     date: Optional[str] = None
     duration: Optional[str] = None
     technologies: Optional[List[str]] = None
+    model_url: Optional[str] = None  # URL فایل مدل 3D
+    model_type: Optional[str] = None  # نوع مدل
 
 
 class GalleryItem(GalleryItemBase):

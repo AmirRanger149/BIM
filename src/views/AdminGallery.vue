@@ -91,6 +91,33 @@
             </div>
           </div>
 
+          <!-- Row 5: 3D Model Upload -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>📦 مدل 3D (اختیاری)</label>
+              <div class="file-input-group">
+                <input 
+                  type="file" 
+                  @change="handleModelUpload" 
+                  accept=".glb,.gltf,.obj"
+                  class="file-input"
+                />
+                <input v-model="formData.model_url" type="text" placeholder="یا URL مدل 3D را پیوند کنید" />
+              </div>
+              <div v-if="uploadingModel" class="uploading-status">درحال آپلود مدل...</div>
+              <small class="form-hint">فرمت‌های پشتیبانی: GLB, GLTF, OBJ</small>
+            </div>
+            <div class="form-group">
+              <label>نوع مدل</label>
+              <select v-model="formData.model_type">
+                <option value="auto">تشخیص خودکار</option>
+                <option value="gltf">GLTF</option>
+                <option value="glb">GLB</option>
+                <option value="obj">OBJ</option>
+              </select>
+            </div>
+          </div>
+
           <!-- Form Actions -->
           <div class="form-actions">
             <button type="submit" class="btn-primary">{{ editingId ? 'ذخیره تغییرات' : 'ایجاد پروژه' }}</button>
@@ -147,6 +174,7 @@ const loading = ref(false)
 const showForm = ref(false)
 const editingId = ref(null)
 const uploadingImage = ref(false)
+const uploadingModel = ref(false)
 const formData = ref({
   title: '',
   description: '',
@@ -154,7 +182,9 @@ const formData = ref({
   category: '',
   image: '',
   slider_id: null,
-  duration: ''
+  duration: '',
+  model_url: '',
+  model_type: 'auto'
 })
 
 const loadItems = async () => {
@@ -221,6 +251,36 @@ const handleImageUpload = async (event) => {
   }
 }
 
+const handleModelUpload = async (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  // Validate file type
+  const validExtensions = ['glb', 'gltf', 'obj']
+  const fileExtension = file.name.split('.').pop().toLowerCase()
+  if (!validExtensions.includes(fileExtension)) {
+    try { const { error: tError } = await import('../composables/useToast.js'); tError('فرمت فایل مدل نامعتبر است. از GLB، GLTF یا OBJ استفاده کنید'); } catch {}
+    return
+  }
+
+  uploadingModel.value = true
+  try {
+    const formDataFile = new FormData()
+    formDataFile.append('file', file)
+    const response = await adminService.uploadFile(formDataFile)
+    formData.value.model_url = response.url
+    
+    // Auto-detect model type
+    if (fileExtension !== 'auto') {
+      formData.value.model_type = fileExtension
+    }
+  } catch (error) {
+    try { const { error: tError } = await import('../composables/useToast.js'); tError(error.response?.data?.detail || 'خطا در آپلود مدل 3D'); } catch {}
+  } finally {
+    uploadingModel.value = false
+  }
+}
+
 const closeForm = () => {
   showForm.value = false
   editingId.value = null
@@ -231,7 +291,9 @@ const closeForm = () => {
     category: '',
     image: '',
     slider_id: null,
-    duration: ''
+    duration: '',
+    model_url: '',
+    model_type: 'auto'
   }
 }
 
@@ -399,6 +461,13 @@ onMounted(() => {
   font-size: 0.85rem;
   font-weight: 600;
   margin-top: 0.5rem;
+}
+
+.form-hint {
+  display: block;
+  color: #999;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
 }
 
 /* Editor Container */
