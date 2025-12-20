@@ -439,7 +439,7 @@ onMounted(() => {
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0ea5e9;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -460,7 +460,7 @@ onMounted(() => {
 }
 
 .file-input:hover {
-  border-color: #667eea;
+  border-color: #0ea5e9;
   background: rgba(102, 126, 234, 0.05);
 }
 
@@ -469,7 +469,7 @@ onMounted(() => {
 }
 
 .uploading-status {
-  color: #667eea;
+  color: #0ea5e9;
   font-size: 0.85rem;
   font-weight: 600;
   margin-top: 0.5rem;
@@ -521,7 +521,7 @@ onMounted(() => {
 :deep(.ql-toolbar.ql-snow .ql-picker-label:hover),
 :deep(.ql-toolbar.ql-snow .ql-picker-item:hover),
 :deep(.ql-toolbar.ql-snow .ql-picker-item.ql-selected) {
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 /* Form Actions */
@@ -545,7 +545,7 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
@@ -586,7 +586,7 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border: 4px solid rgba(102, 126, 234, 0.2);
-  border-top-color: #667eea;
+  border-top-color: #0ea5e9;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -639,7 +639,7 @@ onMounted(() => {
   position: relative;
   height: 200px;
   overflow: hidden;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
 }
 
 .card-image {
@@ -660,7 +660,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   font-size: 3rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
 }
 
@@ -680,7 +680,7 @@ onMounted(() => {
 }
 
 .overlay-badge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   padding: 0.6rem 1.2rem;
   border-radius: 50px;
@@ -724,7 +724,7 @@ onMounted(() => {
   background: rgba(102, 126, 234, 0.1);
   padding: 0.3rem 0.7rem;
   border-radius: 8px;
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: 500;
 }
 
@@ -772,7 +772,7 @@ onMounted(() => {
 }
 
 .description-html :deep(a) {
-  color: #667eea;
+  color: #0ea5e9;
   text-decoration: none;
 }
 
@@ -802,7 +802,7 @@ onMounted(() => {
 
 .btn-edit {
   background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 .btn-edit:hover {

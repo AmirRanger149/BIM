@@ -36,22 +36,22 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
 }
 
 /* Selection */
 ::selection {
-  background: rgba(102, 126, 234, 0.3);
+  background: rgba(14, 165, 233, 0.3);
   color: inherit;
 }
 
 .dark-mode ::selection {
-  background: rgba(102, 126, 234, 0.5);
+  background: rgba(14, 165, 233, 0.5);
 }
 
 /* Smooth transitions */
@@ -72,7 +72,7 @@ select {
 
 /* Focus styles */
 :focus-visible {
-  outline: 2px solid #667eea;
+  outline: 2px solid #0ea5e9;
   outline-offset: 2px;
 }
 
@@ -88,11 +88,11 @@ select {
 
 /* Utility classes */
 .gradient-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -218,7 +218,7 @@ select {
 .slider-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(102, 126, 234, 0.3) 100%);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(14, 165, 233, 0.3) 100%);
   z-index: 1;
 }
 
@@ -240,7 +240,7 @@ select {
 .gradient-orb.orb-1 {
   width: 400px;
   height: 400px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   top: -50px;
   left: -100px;
   animation-delay: 0s;
@@ -249,7 +249,7 @@ select {
 .gradient-orb.orb-2 {
   width: 300px;
   height: 300px;
-  background: linear-gradient(135deg, #764ba2 0%, #f093fb 100%);
+  background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
   bottom: 100px;
   right: 50px;
   animation-delay: 2s;
@@ -258,7 +258,7 @@ select {
 .gradient-orb.orb-3 {
   width: 350px;
   height: 350px;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #4facfe 100%);
   top: 50%;
   right: -100px;
   animation-delay: 4s;
@@ -355,14 +355,14 @@ select {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: #fff;
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+  box-shadow: 0 15px 40px rgba(14, 165, 233, 0.5);
 }
 
 .btn-secondary {

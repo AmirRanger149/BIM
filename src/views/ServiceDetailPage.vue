@@ -94,7 +94,7 @@
 
               <!-- Service Icon -->
               <div class="service-icon-box" v-if="service.icon">
-                <div class="service-icon" :style="{ background: service.gradient || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }">
+                <div class="service-icon" :style="{ background: service.gradient || 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)' }">
                   {{ service.icon }}
                 </div>
               </div>
@@ -264,7 +264,7 @@ onMounted(() => {
   display: inline-block;
   margin-top: 2rem;
   padding: 0.75rem 1.5rem;
-  background-color: #667eea;
+  background-color: #0ea5e9;
   color: white;
   border-radius: 4px;
   text-decoration: none;
@@ -272,7 +272,7 @@ onMounted(() => {
 }
 
 .back-link:hover {
-  background-color: #764ba2;
+  background-color: #06b6d4;
 }
 
 /* Breadcrumb */
@@ -293,13 +293,13 @@ onMounted(() => {
 }
 
 .breadcrumb a {
-  color: #667eea;
+  color: #0ea5e9;
   text-decoration: none;
   transition: color 0.3s;
 }
 
 .breadcrumb a:hover {
-  color: #764ba2;
+  color: #06b6d4;
   text-decoration: underline;
 }
 
@@ -423,7 +423,7 @@ onMounted(() => {
 }
 
 .feature-icon {
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: bold;
   flex-shrink: 0;
   margin-top: 0.25rem;
@@ -473,7 +473,7 @@ onMounted(() => {
 
 .price-value {
   font-size: 1.8rem;
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: bold;
 }
 
@@ -489,7 +489,7 @@ onMounted(() => {
 
 .cta-button {
   padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -520,7 +520,7 @@ onMounted(() => {
 /* Contact CTA Section */
 .contact-cta {
   padding: 4rem 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   text-align: center;
 }
@@ -540,7 +540,7 @@ onMounted(() => {
   display: inline-block;
   padding: 1rem 2rem;
   background-color: white;
-  color: #667eea;
+  color: #0ea5e9;
   text-decoration: none;
   border-radius: 4px;
   font-weight: 600;
@@ -556,7 +556,7 @@ onMounted(() => {
 /* Spinner */
 .spinner {
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #667eea;
+  border-top: 4px solid #0ea5e9;
   border-radius: 50%;
   width: 40px;
   height: 40px;

@@ -7,8 +7,8 @@
   --admin-border: #e5e7eb;
   --admin-muted: #6b7280;
   --admin-text: #1f2937;
-  --admin-primary-start: #667eea;
-  --admin-primary-end: #764ba2;
+  --admin-primary-start: #0ea5e9;
+  --admin-primary-end: #06b6d4;
   --admin-success: #10b981;
   --admin-danger: #ef4444;
   --admin-warning: #f59e0b;
@@ -28,7 +28,7 @@ body {
 }
 
 /* NProgress top bar (thin & zesty) */
-#nprogress .bar { background: linear-gradient(90deg, #667eea, #f5576c); height: 3px; box-shadow: 0 0 10px rgba(102,126,234,0.6); }
+#nprogress .bar { background: linear-gradient(90deg, #0ea5e9, #06b6d4); height: 3px; box-shadow: 0 0 10px rgba(102,126,234,0.6); }
 #nprogress .peg { box-shadow: 0 0 10px rgba(245,87,108,0.6), 0 0 5px rgba(102,126,234,0.4); }
 
 /* Page container */
@@ -196,7 +196,7 @@ tbody tr:hover { background: rgba(102,126,234,0.05); }
 .chip { padding: 0.35rem 0.85rem; border-radius: 999px; background: rgba(102,126,234,0.12); color: #4338ca; font-weight: 700; font-size: 0.85rem; box-shadow: 0 8px 16px rgba(102,126,234,0.12); }
 .chip.subtle { background: rgba(67,56,202,0.08); color: #312e81; }
 .badge { padding: 0.2rem 0.6rem; border-radius: 6px; background: rgba(0,0,0,0.06); font-weight: 700; font-size: 0.8rem; color: var(--admin-text); }
-.avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; box-shadow: 0 8px 18px rgba(102,126,234,0.25); }
+.avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #0ea5e9, #06b6d4); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; box-shadow: 0 8px 18px rgba(102,126,234,0.25); }
 
 .table-wrapper { overflow-x: auto; }
 .actions { display: flex; gap: 0.5rem; }

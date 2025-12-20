@@ -311,7 +311,7 @@ onMounted(() => {
 .chip { padding: 0.35rem 0.85rem; border-radius: 999px; background: rgba(102,126,234,0.12); color: #4338ca; font-weight: 700; font-size: 0.85rem; }
 .chip.subtle { background: rgba(67,56,202,0.08); color: #312e81; }
 .pill { display: inline-flex; padding: 0.25rem 0.65rem; border-radius: 999px; background: rgba(99,102,241,0.1); color: #3730a3; font-weight: 700; font-size: 0.85rem; }
-.frosted-table thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+.frosted-table thead { background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%); color: #fff; }
 .frosted-table tbody tr:hover { background: rgba(102,126,234,0.08); }
 .ghost { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4); }
 
@@ -427,7 +427,7 @@ onMounted(() => {
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0ea5e9;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -470,7 +470,7 @@ onMounted(() => {
 :deep(.ql-toolbar.ql-snow .ql-picker-label:hover),
 :deep(.ql-toolbar.ql-snow .ql-picker-item:hover),
 :deep(.ql-toolbar.ql-snow .ql-picker-item.ql-selected) {
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 /* File Input */
@@ -490,7 +490,7 @@ onMounted(() => {
 }
 
 .file-input:hover {
-  border-color: #667eea;
+  border-color: #0ea5e9;
   background: rgba(102, 126, 234, 0.05);
 }
 
@@ -499,7 +499,7 @@ onMounted(() => {
 }
 
 .uploading-status {
-  color: #667eea;
+  color: #0ea5e9;
   font-size: 0.85rem;
   margin-top: 0.5rem;
 }
@@ -525,7 +525,7 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }

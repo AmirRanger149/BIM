@@ -648,7 +648,7 @@ watch(activeTab, () => {
 }
 
 .archive-hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   padding: 8rem 0 4rem;
   text-align: center;
   color: white;
@@ -734,7 +734,7 @@ watch(activeTab, () => {
 
 .tab-btn.active {
   background: white;
-  color: #667eea;
+  color: #0ea5e9;
   border-color: white;
 }
 
@@ -759,7 +759,7 @@ watch(activeTab, () => {
   width: 50px;
   height: 50px;
   border: 4px solid rgba(102, 126, 234, 0.1);
-  border-top-color: #667eea;
+  border-top-color: #0ea5e9;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -816,7 +816,7 @@ watch(activeTab, () => {
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0ea5e9;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -847,14 +847,14 @@ watch(activeTab, () => {
 }
 
 .filter-btn:hover {
-  border-color: #667eea;
-  color: #667eea;
+  border-color: #0ea5e9;
+  color: #0ea5e9;
 }
 
 .filter-btn.active {
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
-  border-color: #667eea;
+  border-color: #0ea5e9;
 }
 
 .active-indicator {
@@ -887,7 +887,7 @@ watch(activeTab, () => {
 
 .sort-select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0ea5e9;
 }
 
 .view-toggle {
@@ -915,7 +915,7 @@ watch(activeTab, () => {
 }
 
 .view-toggle button.active {
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
 }
 
@@ -1071,7 +1071,7 @@ watch(activeTab, () => {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
   display: flex;
   align-items: center;
@@ -1090,7 +1090,7 @@ watch(activeTab, () => {
 }
 
 .read-more {
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -1178,7 +1178,7 @@ watch(activeTab, () => {
 .view-btn {
   padding: 0.8rem 1.5rem;
   background: white;
-  color: #667eea;
+  color: #0ea5e9;
   border-radius: 8px;
   font-weight: 600;
   display: inline-block;
@@ -1268,8 +1268,8 @@ watch(activeTab, () => {
 .page-btn {
   padding: 0.6rem 1.2rem;
   background: white;
-  color: #667eea;
-  border: 2px solid #667eea;
+  color: #0ea5e9;
+  border: 2px solid #0ea5e9;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
@@ -1280,12 +1280,12 @@ watch(activeTab, () => {
 .dark-mode .page-btn {
   background: #2d2d2d;
   color: white;
-  border-color: #667eea;
+  border-color: #0ea5e9;
 }
 
 .pagination-btn:hover:not(:disabled),
 .page-btn:hover {
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
 }
 
@@ -1295,7 +1295,7 @@ watch(activeTab, () => {
 }
 
 .page-btn.active {
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
 }
 

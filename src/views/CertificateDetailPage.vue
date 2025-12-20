@@ -151,12 +151,12 @@ const error = ref(null)
 
 const getGradientByType = (type) => {
   const gradients = {
-    'international': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    'national': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    'international': 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)',
+    'national': 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)',
     'standard': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
     'certificate': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
   }
-  return gradients[type] || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+  return gradients[type] || 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)'
 }
 
 const downloadCertificate = () => {
@@ -277,7 +277,7 @@ onMounted(() => {
   display: inline-block;
   margin-top: 2rem;
   padding: 0.75rem 1.5rem;
-  background-color: #667eea;
+  background-color: #0ea5e9;
   color: white;
   border-radius: 4px;
   text-decoration: none;
@@ -285,7 +285,7 @@ onMounted(() => {
 }
 
 .back-link:hover {
-  background-color: #764ba2;
+  background-color: #06b6d4;
 }
 
 /* Breadcrumb */
@@ -306,13 +306,13 @@ onMounted(() => {
 }
 
 .breadcrumb a {
-  color: #667eea;
+  color: #0ea5e9;
   text-decoration: none;
   transition: color 0.3s;
 }
 
 .breadcrumb a:hover {
-  color: #764ba2;
+  color: #06b6d4;
   text-decoration: underline;
 }
 
@@ -342,7 +342,7 @@ onMounted(() => {
 .certificate-badge {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background-color: #667eea;
+  background-color: #0ea5e9;
   color: white;
   border-radius: 20px;
   font-size: 0.85rem;
@@ -352,7 +352,7 @@ onMounted(() => {
 }
 
 .certificate-badge.national {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
 }
 
 .certificate-badge.standard {
@@ -479,7 +479,7 @@ onMounted(() => {
 }
 
 .spec-value {
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: 500;
 }
 
@@ -530,7 +530,7 @@ onMounted(() => {
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-right: 4px solid #667eea;
+  border-right: 4px solid #0ea5e9;
 }
 
 .certificate-page.dark-mode .verification-box {
@@ -560,7 +560,7 @@ onMounted(() => {
 
 .download-button {
   padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -612,7 +612,7 @@ onMounted(() => {
 /* Spinner */
 .spinner {
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #667eea;
+  border-top: 4px solid #0ea5e9;
   border-radius: 50%;
   width: 40px;
   height: 40px;

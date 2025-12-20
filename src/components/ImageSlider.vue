@@ -68,7 +68,7 @@ const props = defineProps({
   },
   gradient: {
     type: String,
-    default: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    default: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)'
   },
   autoplay: {
     type: Boolean,

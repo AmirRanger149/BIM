@@ -48,7 +48,7 @@
       <!-- Project Header -->
       <header class="project-header">
         <div class="container">
-          <div class="project-category" :style="{ background: project.categoryColor || '#667eea' }">
+          <div class="project-category" :style="{ background: project.categoryColor || '#0ea5e9' }">
             {{ project.category }}
           </div>
           <h1 class="project-title" itemprop="name">{{ project.title }}</h1>
@@ -183,34 +183,6 @@
                     <span class="info-value">{{ project.budget }}</span>
                   </div>
                 </div>
-              </div>
-              
-              <!-- Share -->
-              <div class="share-card">
-                <h3>اشتراک‌گذاری</h3>
-                <div class="share-buttons">
-                  <button @click="share('twitter')" class="share-btn" aria-label="اشتراک در توییتر">
-                    🐦
-                  </button>
-                  <button @click="share('linkedin')" class="share-btn" aria-label="اشتراک در لینکدین">
-                    💼
-                  </button>
-                  <button @click="share('telegram')" class="share-btn" aria-label="اشتراک در تلگرام">
-                    ✈️
-                  </button>
-                  <button @click="share('whatsapp')" class="share-btn" aria-label="اشتراک در واتساپ">
-                    💬
-                  </button>
-                </div>
-              </div>
-              
-              <!-- CTA -->
-              <div class="cta-card">
-                <h3>پروژه مشابه می‌خواهید؟</h3>
-                <p>با ما تماس بگیرید</p>
-                <router-link to="/#contact" class="cta-btn">
-                  تماس با ما
-                </router-link>
               </div>
             </aside>
           </div>
@@ -515,7 +487,7 @@ const getStatusText = (status) => {
   width: 50px;
   height: 50px;
   border: 4px solid rgba(102, 126, 234, 0.1);
-  border-top-color: #667eea;
+  border-top-color: #0ea5e9;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -528,7 +500,7 @@ const getStatusText = (status) => {
 .back-link {
   margin-top: 1rem;
   padding: 0.8rem 1.5rem;
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
   border-radius: 8px;
   text-decoration: none;
@@ -560,7 +532,7 @@ const getStatusText = (status) => {
 }
 
 .breadcrumb a {
-  color: #667eea;
+  color: #0ea5e9;
   text-decoration: none;
 }
 
@@ -698,7 +670,7 @@ const getStatusText = (status) => {
 }
 
 .project-text :deep(blockquote) {
-  border-right: 4px solid #667eea;
+  border-right: 4px solid #0ea5e9;
   padding: 1rem 1.5rem;
   margin: 2rem 0;
   background: #f8f9fa;
@@ -733,7 +705,7 @@ const getStatusText = (status) => {
 .tech-tag {
   padding: 0.6rem 1.2rem;
   background: #f0f0f0;
-  color: #667eea;
+  color: #0ea5e9;
   border-radius: 20px;
   font-weight: 500;
 }
@@ -760,7 +732,7 @@ const getStatusText = (status) => {
 }
 
 .feature-icon {
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: bold;
   font-size: 1.2rem;
 }
@@ -848,7 +820,7 @@ const getStatusText = (status) => {
 
 .thumbnail:hover,
 .thumbnail.active {
-  border-color: #667eea;
+  border-color: #0ea5e9;
 }
 
 .thumbnail img {
@@ -959,7 +931,7 @@ const getStatusText = (status) => {
 .cta-btn {
   display: inline-block;
   padding: 0.8rem 1.5rem;
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
   border-radius: 8px;
   text-decoration: none;
@@ -1037,7 +1009,7 @@ const getStatusText = (status) => {
 .related-category {
   display: inline-block;
   padding: 0.3rem 0.8rem;
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
   border-radius: 12px;
   font-size: 0.8rem;
@@ -1079,7 +1051,7 @@ const getStatusText = (status) => {
 }
 
 .nav-btn:hover {
-  border-color: #667eea;
+  border-color: #0ea5e9;
   transform: translateY(-3px);
 }
 
@@ -1096,19 +1068,19 @@ const getStatusText = (status) => {
 
 .nav-title {
   font-weight: 600;
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 .nav-arrow {
   font-size: 2rem;
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 .all-btn {
   justify-content: center;
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
-  border-color: #667eea;
+  border-color: #0ea5e9;
 }
 
 /* Lightbox */

@@ -253,7 +253,7 @@ const notifyError = async (message) => {
 .analytics-cards .card { min-height: 140px; }
 .metric-number { font-size: 2rem; font-weight: 800; margin: 0.35rem 0; color: #111827; }
 .mini-bar { height: 8px; background: #e5e7eb; border-radius: 999px; overflow: hidden; }
-.mini-bar .fill { display: block; height: 100%; background: linear-gradient(135deg, #667eea, #f5576c); border-radius: inherit; }
+.mini-bar .fill { display: block; height: 100%; background: linear-gradient(135deg, #0ea5e9, #06b6d4); border-radius: inherit; }
 
 .analytics-panel { overflow: hidden; }
 .sparkline { display: flex; align-items: flex-end; gap: 6px; min-height: 160px; padding: 0.5rem 0; }
@@ -269,7 +269,7 @@ const notifyError = async (message) => {
 .ranked-list li { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.75rem; padding: 0.85rem 1rem; border-radius: 12px; background: rgba(255,255,255,0.85); border: 1px solid rgba(226,232,240,0.8); box-shadow: 0 4px 14px rgba(0,0,0,0.04); }
 .ranked-list .label { font-weight: 700; color: #111827; }
 .ranked-list .bar { height: 8px; background: #f1f5f9; border-radius: 999px; overflow: hidden; grid-column: 1 / 2; }
-.ranked-list .bar .fill { display: block; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); }
+.ranked-list .bar .fill { display: block; height: 100%; background: linear-gradient(90deg, #0ea5e9, #06b6d4); }
 .ranked-list .count { font-weight: 800; color: #4b5563; }
 .ranked-list.compact li { padding: 0.65rem 0.75rem; }
 

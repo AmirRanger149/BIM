@@ -266,22 +266,22 @@ const notifyError = (message) => {
 .btn-remove { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.9rem; }
 .preview-images { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; width: 100%; height: 100%; }
 .preview-img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-.more-count { display: flex; align-items: center; justify-content: center; background: rgba(102,126,234,0.12); border: 1px dashed #667eea; color: #4338ca; font-weight: 700; border-radius: 10px; padding: 0.3rem 0.75rem; }
+.more-count { display: flex; align-items: center; justify-content: center; background: rgba(102,126,234,0.12); border: 1px dashed #0ea5e9; color: #4338ca; font-weight: 700; border-radius: 10px; padding: 0.3rem 0.75rem; }
 .form-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 0.25rem; }
 
 .sliders-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; }
 .slider-card { border: 1px solid rgba(226,232,240,0.9); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.25s ease; background: rgba(255,255,255,0.92); }
 .slider-card:hover { transform: translateY(-4px); box-shadow: var(--admin-glow); }
-.card-preview { width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; overflow: hidden; position: relative; }
+.card-preview { width: 100%; height: 200px; background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%); display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; overflow: hidden; position: relative; }
 .no-preview { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #e5e7eb; }
 .card-content { padding: 1.1rem; flex: 1; display: flex; flex-direction: column; gap: 0.65rem; }
 .card-content h3 { margin: 0; font-size: 1.05rem; color: #111827; font-weight: 700; }
 .description { margin: 0; font-size: 0.9rem; color: #4b5563; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.images-count { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.75rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px; font-size: 0.85rem; font-weight: 700; width: fit-content; }
+.images-count { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.75rem; background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%); color: white; border-radius: 10px; font-size: 0.85rem; font-weight: 700; width: fit-content; }
 .card-actions { display: flex; gap: 0.5rem; padding: 0.9rem 1rem; border-top: 1px solid rgba(226,232,240,0.9); margin-top: auto; }
 .btn-edit, .btn-delete { flex: 1; padding: 0.6rem 0.75rem; background: none; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; font-weight: 700; white-space: nowrap; }
-.btn-edit:hover { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-color: #667eea; color: white; }
-.btn-delete:hover { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-color: #f5576c; color: white; }
+.btn-edit:hover { background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%); border-color: #0ea5e9; color: white; }
+.btn-delete:hover { background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%); border-color: #06b6d4; color: white; }
 
 .sub-text { color: #9ca3af; font-size: 0.95rem; }
 

@@ -67,7 +67,7 @@ const testimonials = ref([
     company: 'شرکت تکنولوژی پارس',
     text: 'همکاری با این تیم تجربه‌ای فوق‌العاده بود. حرفه‌ای‌گری و تخصص آن‌ها در طراحی و توسعه وب واقعاً قابل تحسین است. پروژه ما در زمان مقرر و با کیفیتی فراتر از انتظار تحویل شد.',
     initial: 'م',
-    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    gradient: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)'
   },
   {
     id: 2,
@@ -76,7 +76,7 @@ const testimonials = ref([
     company: 'استارتاپ نوآوران',
     text: 'تیمی بسیار خلاق و متعهد! طراحی وبسایت ما نه تنها زیبا شد، بلکه کاربرپسند و بهینه هم هست. تعداد بازدیدکنندگان ما بعد از راه‌اندازی وبسایت جدید ۳ برابر شده است.',
     initial: 'س',
-    gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+    gradient: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)'
   },
   {
     id: 3,
@@ -151,7 +151,7 @@ const fetchTestimonials = async () => {
         company: testimonial.company || '',
         text: testimonial.text || testimonial.comment || '',
         initial: testimonial.name ? testimonial.name.charAt(0) : 'ن',
-        gradient: testimonial.gradient || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+        gradient: testimonial.gradient || 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)'
       }))
     }
   } catch (err) {
@@ -310,7 +310,7 @@ onUnmounted(() => {
 
 .author-position {
   font-size: 1rem;
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: 600;
   margin-bottom: 0.25rem;
 }
@@ -337,7 +337,7 @@ onUnmounted(() => {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border: none;
   font-size: 1.5rem;
@@ -374,7 +374,7 @@ onUnmounted(() => {
 }
 
 .dot.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   width: 30px;
   border-radius: 6px;
 }

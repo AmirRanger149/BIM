@@ -6,7 +6,6 @@
         <p class="section-subtitle">نمونه‌ای از پروژه‌های طراحی، نظارت و اجرای شرکت</p>
         <router-link v-if="showViewAll" to="/gallery" class="view-all-btn">
           مشاهده همه پروژه‌ها
-          <span class="btn-icon">→</span>
         </router-link>
       </div>
       
@@ -65,7 +64,7 @@
               <span class="view-btn">مشاهده پروژه</span>
             </div>
           </div>
-          <div class="card-badge" :style="{ background: item.category_color || '#667eea' }">{{ item.category }}</div>
+          <div class="card-badge" :style="{ background: item.category_color || '#0ea5e9' }">{{ item.category }}</div>
 
           <div class="card-body">
             <h3 class="card-title">{{ item.title }}</h3>
@@ -105,7 +104,7 @@
             <div class="modal-info">
               <div class="modal-header-row">
                 <h2 class="modal-title">{{ selectedItem.title }}</h2>
-<div class="modal-category-badge" :style="{ background: selectedItem.category_color || '#667eea' }">
+<div class="modal-category-badge" :style="{ background: selectedItem.category_color || '#0ea5e9' }">
                 {{ selectedItem.category }}
               </div>
             </div>
@@ -340,7 +339,7 @@ const previousItem = () => {
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0ea5e9;
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
@@ -369,12 +368,12 @@ const previousItem = () => {
 }
 
 .filter-btn:hover {
-  border-color: #667eea;
-  color: #667eea;
+  border-color: #0ea5e9;
+  color: #0ea5e9;
 }
 
 .filter-btn.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border-color: transparent;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
@@ -445,7 +444,7 @@ const previousItem = () => {
   gap: 0.75rem;
   margin-top: 1.5rem;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border-radius: 50px;
   font-weight: 600;
@@ -622,7 +621,7 @@ const previousItem = () => {
   border: 1px solid rgba(102, 126, 234, 0.2);
   border-radius: 50px;
   font-size: 0.8rem;
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: 500;
 }
 
@@ -813,7 +812,7 @@ const previousItem = () => {
   padding: 1.5rem;
   background: rgba(102, 126, 234, 0.05);
   border-radius: 15px;
-  border-right: 4px solid #667eea;
+  border-right: 4px solid #0ea5e9;
 }
 
 .dark-mode .modal-details {
@@ -864,7 +863,7 @@ const previousItem = () => {
   content: '✓';
   position: absolute;
   right: 0.75rem;
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: 700;
 }
 
@@ -880,7 +879,7 @@ const previousItem = () => {
 
 .tech-badge {
   padding: 0.6rem 1.2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border-radius: 50px;
   font-size: 0.9rem;
@@ -901,7 +900,7 @@ const previousItem = () => {
   border: 1px solid rgba(102, 126, 234, 0.3);
   border-radius: 50px;
   font-size: 0.9rem;
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: 600;
 }
 
@@ -935,7 +934,7 @@ const previousItem = () => {
 }
 
 .action-btn.primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
@@ -947,7 +946,7 @@ const previousItem = () => {
 
 .action-btn.secondary {
   background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+  color: #0ea5e9;
   border: 2px solid rgba(102, 126, 234, 0.3);
 }
 
@@ -975,7 +974,7 @@ const previousItem = () => {
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 50px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -1123,7 +1122,7 @@ const previousItem = () => {
   width: 40px;
   height: 40px;
   border: 4px solid rgba(102, 126, 234, 0.2);
-  border-top-color: #667eea;
+  border-top-color: #0ea5e9;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

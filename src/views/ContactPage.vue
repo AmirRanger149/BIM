@@ -178,7 +178,7 @@ const { isDark } = inject('theme')
   font-size: 2.5rem;
   font-weight: 900;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -303,7 +303,7 @@ const { isDark } = inject('theme')
 }
 
 .info-content a:hover {
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 /* Phone Numbers Section */
@@ -378,7 +378,7 @@ const { isDark } = inject('theme')
 }
 
 .phone-card:hover {
-  border-color: #667eea;
+  border-color: #0ea5e9;
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
 }
@@ -421,7 +421,7 @@ const { isDark } = inject('theme')
 }
 
 .phone-card:hover .city-name {
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 .phone-card.support:hover .city-name {
@@ -444,7 +444,7 @@ const { isDark } = inject('theme')
 }
 
 .phone-number:hover {
-  color: #667eea;
+  color: #0ea5e9;
   transform: translateX(-2px);
 }
 

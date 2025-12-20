@@ -328,7 +328,7 @@ onMounted(() => {
   width: 50px;
   height: 50px;
   border: 4px solid rgba(102, 126, 234, 0.1);
-  border-top-color: #667eea;
+  border-top-color: #0ea5e9;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -346,7 +346,7 @@ onMounted(() => {
 .back-link {
   margin-top: 1rem;
   padding: 0.8rem 1.5rem;
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
   border-radius: 8px;
   text-decoration: none;
@@ -378,7 +378,7 @@ onMounted(() => {
 }
 
 .breadcrumb a {
-  color: #667eea;
+  color: #0ea5e9;
   text-decoration: none;
   transition: color 0.3s;
 }
@@ -408,7 +408,7 @@ onMounted(() => {
 .article-category {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -458,7 +458,7 @@ onMounted(() => {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
   color: white;
   display: flex;
   align-items: center;
@@ -570,7 +570,7 @@ onMounted(() => {
 }
 
 .article-content :deep(blockquote) {
-  border-right: 4px solid #667eea;
+  border-right: 4px solid #0ea5e9;
   padding: 1rem 1.5rem;
   margin: 2rem 0;
   background: #f8f9fa;

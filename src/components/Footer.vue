@@ -111,18 +111,19 @@ onMounted(() => {
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .logo-image {
-  height: 40px;
+  height: 45px;
   object-fit: contain;
   -webkit-background-clip: unset;
   -webkit-text-fill-color: unset;
   background-clip: unset;
+  filter: drop-shadow(0 2px 4px rgba(14, 165, 233, 0.2));
 }
 
 .logo-icon {
@@ -153,7 +154,7 @@ onMounted(() => {
 }
 
 .social-link:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   transform: translateY(-3px);
 }
 
@@ -181,7 +182,7 @@ onMounted(() => {
 }
 
 .footer-links a:hover {
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 .footer-contact li {

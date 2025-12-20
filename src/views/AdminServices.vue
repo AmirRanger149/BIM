@@ -90,7 +90,7 @@
                     id="service-color"
                     v-model="formData.color"
                     type="text"
-                    placeholder="#667eea"
+                    placeholder="#0ea5e9"
                   />
                 </div>
 
@@ -111,7 +111,7 @@
                   id="service-gradient"
                   v-model="formData.gradient"
                   type="text"
-                  placeholder="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                  placeholder="linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)"
                 />
               </div>
 
@@ -220,7 +220,7 @@ const formData = ref({
   title: '',
   description: '',
   icon: '🎯',
-  color: '#667eea',
+  color: '#0ea5e9',
   gradient: '',
   image: '',
   slider_id: null,
@@ -245,7 +245,7 @@ const resetForm = () => {
     title: '',
     description: '',
     icon: '🎯',
-    color: '#667eea',
+    color: '#0ea5e9',
     gradient: '',
     image: '',
     slider_id: null,
@@ -268,7 +268,7 @@ const editService = (service) => {
     title: service.title,
     description: service.description || '',
     icon: service.icon || '🎯',
-    color: service.color || '#667eea',
+    color: service.color || '#0ea5e9',
     gradient: service.gradient || '',
     image: service.image || '',
     slider_id: service.slider_id || null,

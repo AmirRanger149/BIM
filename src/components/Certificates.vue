@@ -92,7 +92,7 @@ const fetchCertificates = async () => {
           issuer: 'سازمان بین‌المللی استاندارد',
           date: 'دی ۱۴۰۳',
           icon: '🏆',
-          gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          gradient: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)',
           type: 'international',
           type_label: 'بین‌المللی',
           description: 'گواهینامه مدیریت کیفیت ISO 9001:2015'
@@ -103,7 +103,7 @@ const fetchCertificates = async () => {
           issuer: 'سازمان بین‌المللی استاندارد',
           date: 'آذر ۱۴۰۳',
           icon: '🔐',
-          gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+          gradient: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)',
           type: 'security',
           type_label: 'امنیت'
         }
@@ -119,7 +119,7 @@ const fetchCertificates = async () => {
         issuer: 'سازمان بین‌المللی استاندارد',
         date: 'دی ۱۴۰۳',
         icon: '🏆',
-        gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        gradient: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)',
         type: 'international',
         type_label: 'بین‌المللی',
         description: 'گواهینامه مدیریت کیفیت ISO 9001:2015'
@@ -268,12 +268,12 @@ onMounted(() => {
 
 .certificate-badge.international {
   background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 .certificate-badge.security {
   background: rgba(240, 147, 251, 0.1);
-  color: #f093fb;
+  color: #0ea5e9;
 }
 
 .certificate-badge.certification {
