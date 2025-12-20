@@ -2,10 +2,10 @@
   <nav class="navbar">
     <div class="container">
       <div class="nav-content">
-        <div class="logo">
-          <span class="logo-icon">🏗️</span>
-          <span class="logo-text">BIM</span>
-        </div>
+        <router-link to="/" class="logo">
+          <img v-if="logoUrl" :src="logoUrl" :alt="'Logo'" class="logo-image" />
+          <span v-else class="logo-icon">🏗️</span>
+        </router-link>
         
         <ul class="nav-links" :class="{ 'active': mobileMenuOpen }">
           <li><router-link to="/" class="nav-link" @click="handleNavClick('#home')">خانه</router-link></li>
@@ -38,8 +38,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useSiteSettings } from '../composables/useSiteSettings'
 
 defineProps({
   isDark: Boolean
@@ -50,6 +51,7 @@ defineEmits(['toggle-theme'])
 const router = useRouter()
 const route = useRoute()
 const mobileMenuOpen = ref(false)
+const { logoUrl, loadSettings, addListener } = useSiteSettings()
 
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
@@ -80,6 +82,17 @@ const handleNavClick = (hash) => {
     }
   }
 }
+
+onMounted(() => {
+  loadSettings()
+  addListener(() => {
+    loadSettings()
+  })
+})
+
+watch(() => route.path, () => {
+  closeMobileMenu()
+})
 </script>
 
 <style scoped>
@@ -130,6 +143,16 @@ const handleNavClick = (hash) => {
   background-clip: text;
   cursor: pointer;
   transition: transform 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo-image {
+  height: 40px;
+  object-fit: contain;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
 }
 
 .logo:hover {

@@ -394,39 +394,6 @@ class Slider(SliderBase):
         from_attributes = True
 
 
-# ============= Comment Schemas =============
-
-class CommentBase(BaseModel):
-    name: str = Field(..., min_length=1, max_length=100)
-    email: EmailStr
-    content: str = Field(..., min_length=10)
-    rating: int = Field(..., ge=1, le=5)  # امتیاز 1 تا 5
-    content_type: str = Field(..., pattern="^(article|project)$")  # article یا project
-    content_id: int
-
-
-class CommentCreate(CommentBase):
-    pass
-
-
-class CommentUpdate(BaseModel):
-    name: Optional[str] = Field(None, min_length=1, max_length=100)
-    email: Optional[EmailStr] = None
-    content: Optional[str] = Field(None, min_length=10)
-    rating: Optional[int] = Field(None, ge=1, le=5)
-    approved: Optional[bool] = None
-
-
-class Comment(CommentBase):
-    id: int
-    approved: bool
-    created_at: datetime
-    updated_at: Optional[datetime] = None
-    
-    class Config:
-        from_attributes = True
-
-
 # ============= Response Schemas =============
 
 class ResponseModel(BaseModel):

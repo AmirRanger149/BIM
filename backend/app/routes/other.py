@@ -80,6 +80,20 @@ def get_certificates(db: Session = Depends(get_db)):
     return {"data": certificates_data}
 
 
+@router.get("/certificates/{certificate_id}", response_model=dict)
+def get_certificate(certificate_id: int, db: Session = Depends(get_db)):
+    """دریافت یک گواهینامه با ID"""
+    certificate = db.query(models.Certificate).filter(
+        models.Certificate.id == certificate_id
+    ).first()
+    
+    if not certificate:
+        raise HTTPException(status_code=404, detail="گواهینامه یافت نشد")
+    
+    certificate_data = schemas.Certificate.from_orm(certificate)
+    return {"data": certificate_data}
+
+
 @router.post("/certificates", response_model=dict, status_code=201)
 def create_certificate(
     certificate: schemas.CertificateCreate,
@@ -158,6 +172,21 @@ def get_services(db: Session = Depends(get_db)):
     
     services_data = [schemas.Service.from_orm(s) for s in services]
     return {"data": services_data}
+
+
+@router.get("/services/{service_id}", response_model=dict)
+def get_service(service_id: int, db: Session = Depends(get_db)):
+    """دریافت یک خدمت با ID"""
+    service = db.query(models.Service).filter(
+        models.Service.id == service_id,
+        models.Service.active == True
+    ).first()
+    
+    if not service:
+        raise HTTPException(status_code=404, detail="خدمت یافت نشد")
+    
+    service_data = schemas.Service.from_orm(service)
+    return {"data": service_data}
 
 
 @router.get("/statistics", response_model=dict)

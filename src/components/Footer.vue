@@ -4,7 +4,8 @@
       <div class="footer-content">
         <div class="footer-section">
           <div class="footer-logo">
-            <span class="logo-icon">🏗️</span>
+            <img v-if="logoUrl" :src="logoUrl" :alt="'Logo'" class="logo-image" />
+            <span v-else class="logo-icon">🏗️</span>
             <span class="logo-text">مهندسین مشاور BIM</span>
           </div>
           <p class="footer-description">
@@ -158,6 +159,20 @@
   </footer>
 </template>
 
+<script setup>
+import { onMounted } from 'vue'
+import { useSiteSettings } from '../composables/useSiteSettings'
+
+const { logoUrl, loadSettings, addListener } = useSiteSettings()
+
+onMounted(() => {
+  loadSettings()
+  addListener(() => {
+    loadSettings()
+  })
+})
+</script>
+
 <style scoped>
 .footer {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
@@ -189,6 +204,14 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.logo-image {
+  height: 40px;
+  object-fit: contain;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
 }
 
 .logo-icon {

@@ -171,9 +171,11 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { adminService } from '../api/services'
+import { useSiteSettings } from '../composables/useSiteSettings'
 import { success, error } from '../composables/useToast'
 
 const router = useRouter()
+const { notifyListeners } = useSiteSettings()
 
 // لوگو
 const logoUrl = ref('')
@@ -291,6 +293,8 @@ const saveLogo = async () => {
     await adminService.updateSetting('logo', logoUrl.value)
     savedLogo.value = logoUrl.value
     success('لوگو با موفقیت ذخیره شد')
+    // Notify listeners to refresh logo
+    notifyListeners()
   } catch (err) {
     error('خطا در ذخیره لوگو')
   }
@@ -301,6 +305,8 @@ const saveFavicon = async () => {
     await adminService.updateSetting('favicon', faviconUrl.value)
     savedFavicon.value = faviconUrl.value
     success('Favicon با موفقیت ذخیره شد')
+    // Notify listeners to refresh favicon
+    notifyListeners()
   } catch (err) {
     error('خطا در ذخیره favicon')
   }
@@ -310,6 +316,7 @@ const saveSiteName = async () => {
   try {
     await adminService.updateSetting('site_name', siteName.value)
     success('نام سایت با موفقیت ذخیره شد')
+    notifyListeners()
   } catch (err) {
     error('خطا در ذخیره نام سایت')
   }
@@ -319,6 +326,7 @@ const saveSiteDescription = async () => {
   try {
     await adminService.updateSetting('site_description', siteDescription.value)
     success('توضیح سایت با موفقیت ذخیره شد')
+    notifyListeners()
   } catch (err) {
     error('خطا در ذخیره توضیح')
   }

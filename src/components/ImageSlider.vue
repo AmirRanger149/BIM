@@ -228,12 +228,13 @@ onUnmounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #f5f5f5;
 }
 
 .slide-overlay {

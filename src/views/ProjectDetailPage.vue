@@ -279,15 +279,6 @@
           </router-link>
         </div>
       </div>
-      
-      <!-- بخش نظرات -->
-      <div class="container" v-if="project">
-        <CommentSection
-          content-type="project"
-          :content-id="project.id"
-          :is-dark="isDark"
-        />
-      </div>
     </article>
     
     <!-- Lightbox -->
@@ -313,7 +304,6 @@ import ImageSlider from '../components/ImageSlider.vue'
 import Viewer3D from '../components/Viewer3D.vue'
 import Navbar from '../components/Navbar.vue'
 import Footer from '../components/Footer.vue'
-import CommentSection from '../components/CommentSection.vue'
 
 const route = useRoute()
 const router = useRouter()

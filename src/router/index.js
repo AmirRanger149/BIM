@@ -5,6 +5,8 @@ import Home from '../views/Home.vue'
 import MediaArchive from '../views/MediaArchive.vue'
 import ArticleDetailPage from '../views/ArticleDetailPage.vue'
 import ProjectDetailPage from '../views/ProjectDetailPage.vue'
+import ServiceDetailPage from '../views/ServiceDetailPage.vue'
+import CertificateDetailPage from '../views/CertificateDetailPage.vue'
 import GalleryArchive from '../views/GalleryArchive.vue'
 import ArticlesArchive from '../views/ArticlesArchive.vue'
 import AdminLogin from '../views/AdminLogin.vue'
@@ -15,7 +17,6 @@ import AdminTestimonials from '../views/AdminTestimonials.vue'
 import AdminContacts from '../views/AdminContacts.vue'
 import AdminSliders from '../views/AdminSliders.vue'
 import AdminCertificates from '../views/AdminCertificates.vue'
-import AdminComments from '../views/AdminComments.vue'
 import AdminVideos from '../views/AdminVideos.vue'
 import AdminReports from '../views/AdminReports.vue'
 import AdminUsers from '../views/AdminUsers.vue'
@@ -76,6 +77,24 @@ const routes = [
     meta: {
       title: 'پروژه | گالری مهندسین مشاور BIM',
       description: 'نمونه کارها و پروژه‌های انجام شده با فناوری BIM'
+    }
+  },
+  {
+    path: '/service/:id',
+    name: 'ServiceDetail',
+    component: ServiceDetailPage,
+    meta: {
+      title: 'خدمت | مهندسین مشاور دانش‌بنیان BIM',
+      description: 'خدمات حرفه‌ای BIM و طراحی'
+    }
+  },
+  {
+    path: '/certificate/:id',
+    name: 'CertificateDetail',
+    component: CertificateDetailPage,
+    meta: {
+      title: 'گواهینامه | مهندسین مشاور دانش‌بنیان BIM',
+      description: 'گواهینامه‌ها و استانداردهای بین‌المللی'
     }
   },
   {
@@ -146,11 +165,6 @@ const routes = [
         path: 'certificates',
         name: 'AdminCertificates',
         component: AdminCertificates
-      },
-      {
-        path: 'comments',
-        name: 'AdminComments',
-        component: AdminComments
       },
       {
         path: 'videos',

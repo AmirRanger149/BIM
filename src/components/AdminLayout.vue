@@ -42,9 +42,6 @@
         <router-link to="/admin/certificates" class="nav-item" :class="{ active: isActive('certificates') }" @click="closeSidebar">
           📜 گواهینامه‌ها
         </router-link>
-        <router-link to="/admin/comments" class="nav-item" :class="{ active: isActive('comments') }" @click="closeSidebar">
-          💬 نظرات
-        </router-link>
         <router-link to="/admin/videos" class="nav-item" :class="{ active: isActive('videos') }" @click="closeSidebar">
           🎥 ویدیوها
         </router-link>
@@ -98,7 +95,6 @@ const pageTitle = computed(() => {
     'AdminSliders': '🎬 اسلایدرها',
     'AdminHeroSliders': '🏠 Hero Sliders',
     'AdminCertificates': '📜 گواهینامه‌ها و استانداردها',
-    'AdminComments': '💬 نظرات و امتیازات',
     'AdminVideos': '🎥 ویدیوها',
     'AdminSettings': '⚙️ تنظیمات'
   }
