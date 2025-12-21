@@ -24,7 +24,7 @@
     <div v-else class="certificates-grid">
       <div v-for="cert in certificates" :key="cert.id" class="certificate-card">
         <div class="cert-header">
-          <div class="cert-icon" :style="{ backgroundColor: cert.color || '#667eea' }">
+          <div class="cert-icon" :style="{ backgroundColor: cert.color || '#0ea5e9' }">
             {{ cert.icon }}
           </div>
           <div class="cert-actions">
@@ -139,7 +139,7 @@
                   id="cert-gradient"
                   v-model="formData.gradient"
                   type="text"
-                  placeholder="مثلاً: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                  placeholder="مثلاً: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)"
                 />
               </div>
 
@@ -242,7 +242,7 @@ const formData = ref({
   date: '',
   description: '',
   icon: '📜',
-  color: '#667eea',
+  color: '#0ea5e9',
   gradient: '',
   image: '',
   slider_id: null,
@@ -257,7 +257,7 @@ const resetForm = () => {
     date: '',
     description: '',
     icon: '📜',
-    color: '#667eea',
+    color: '#0ea5e9',
     gradient: '',
     image: '',
     slider_id: null,
@@ -280,7 +280,7 @@ const editCertificate = (cert) => {
     date: cert.date || '',
     description: cert.description || '',
     icon: cert.icon || '📜',
-    color: cert.color || '#667eea',
+    color: cert.color || '#0ea5e9',
     gradient: cert.gradient || '',
     image: cert.image || '',
     slider_id: cert.slider_id || null,

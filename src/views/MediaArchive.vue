@@ -14,18 +14,27 @@
           </span>
           <span class="separator">/</span>
           <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-            <span class="current" itemprop="name">{{ activeTab === 'articles' ? 'مقالات' : 'گالری' }}</span>
+            <span class="current" itemprop="name">
+              {{ activeTab === 'articles' ? 'مقالات' : activeTab === 'gallery' ? 'گالری' : activeTab === 'services' ? 'خدمات' : 'گواهینامه‌ها' }}
+            </span>
             <meta itemprop="position" content="2" />
           </span>
         </div>
         
         <h1 class="page-title">
-          {{ activeTab === 'articles' ? 'مقالات و آموزش‌های BIM' : 'گالری پروژه‌های BIM' }}
+          {{ activeTab === 'articles' ? 'مقالات و آموزش‌های BIM' : 
+             activeTab === 'gallery' ? 'گالری پروژه‌های BIM' :
+             activeTab === 'services' ? 'خدمات مهندسی BIM' :
+             'گواهینامه‌ها و افتخارات' }}
         </h1>
         <p class="page-description">
           {{ activeTab === 'articles' 
             ? 'مقالات تخصصی مدل‌سازی اطلاعات ساختمان، آموزش‌های BIM، و آخرین اخبار صنعت ساخت و ساز' 
-            : 'نمونه کارها و پروژه‌های انجام شده با استفاده از فناوری BIM'
+            : activeTab === 'gallery'
+            ? 'نمونه کارها و پروژه‌های انجام شده با استفاده از فناوری BIM'
+            : activeTab === 'services'
+            ? 'خدمات مهندسی، مشاوره و نظارت در پروژه‌های ساختمانی با استفاده از BIM'
+            : 'گواهینامه‌ها، افتخارات و دستاوردهای شرکت در صنعت ساخت و ساز'
           }}
         </p>
         
@@ -44,6 +53,20 @@
             :aria-label="'نمایش گالری'"
           >
             🖼️ گالری پروژه‌ها
+          </button>
+          <button 
+            @click="switchTab('services')" 
+            :class="['tab-btn', { active: activeTab === 'services' }]"
+            :aria-label="'نمایش خدمات'"
+          >
+            🔧 خدمات مهندسی
+          </button>
+          <button 
+            @click="switchTab('certificates')" 
+            :class="['tab-btn', { active: activeTab === 'certificates' }]"
+            :aria-label="'نمایش گواهینامه‌ها'"
+          >
+            🏆 گواهینامه‌ها
           </button>
         </div>
       </div>
@@ -371,6 +394,258 @@
       </div>
     </section>
 
+    <!-- Services Section -->
+    <section v-if="activeTab === 'services'" class="archive-content">
+      <div class="container">
+        <!-- Loading state -->
+        <div v-if="servicesLoading" class="loading-state">
+          <div class="spinner"></div>
+          <p>در حال بارگیری خدمات...</p>
+        </div>
+        
+        <!-- Error state -->
+        <div v-if="servicesError && !servicesLoading" class="error-state">
+          <p>{{ servicesError }}</p>
+        </div>
+
+        <!-- Search and Filter -->
+        <div v-if="!servicesLoading" class="archive-controls">
+          <div class="search-box">
+            <label for="services-search" class="sr-only">جستجو در خدمات</label>
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input 
+              id="services-search"
+              v-model="servicesSearchQuery" 
+              type="search" 
+              placeholder="جستجو در خدمات..."
+              class="search-input"
+              aria-label="جستجو در خدمات"
+            />
+          </div>
+          
+          <div class="filter-buttons" role="group" aria-label="دسته‌بندی خدمات">
+            <button 
+              v-for="category in serviceCategories" 
+              :key="category"
+              @click="selectedServiceCategory = category"
+              :class="['filter-btn', { active: selectedServiceCategory === category }]"
+              :aria-pressed="selectedServiceCategory === category"
+            >
+              {{ category }}
+            </button>
+          </div>
+        </div>
+
+        <div class="results-info" role="status" aria-live="polite">
+          <span class="results-count">{{ filteredServices.length }} خدمت یافت شد</span>
+        </div>
+
+        <!-- Services Grid -->
+        <TransitionGroup 
+          name="services-list" 
+          tag="div" 
+          class="services-grid"
+          role="list"
+        >
+          <div
+            v-for="service in paginatedServices" 
+            :key="service.id"
+            class="service-card"
+            itemscope 
+            itemtype="https://schema.org/Service"
+            role="listitem"
+          >
+            <ImageSlider 
+              v-if="service.images && service.images.length > 0"
+              class="service-image"
+              :image="service.image"
+              :images="service.images"
+              :icon="service.icon"
+              :gradient="service.gradient"
+            />
+            <div v-else class="service-icon">
+              <span v-if="service.icon">{{ service.icon }}</span>
+              <span v-else>🔧</span>
+            </div>
+            
+            <div class="service-content">
+              <h2 class="service-title" itemprop="name">{{ service.title }}</h2>
+              <p class="service-description" itemprop="description">{{ service.description }}</p>
+              <div class="service-meta">
+                <span class="service-category">{{ service.category }}</span>
+              </div>
+            </div>
+          </div>
+        </TransitionGroup>
+
+        <!-- Pagination -->
+        <nav 
+          v-if="filteredServices.length > itemsPerPage" 
+          class="pagination"
+          aria-label="صفحه‌بندی خدمات"
+        >
+          <button 
+            @click="currentServicePage--" 
+            :disabled="currentServicePage === 1"
+            class="pagination-btn"
+            aria-label="صفحه قبل"
+          >
+            قبلی
+          </button>
+          
+          <div class="pagination-pages">
+            <button
+              v-for="page in totalServicePages"
+              :key="page"
+              @click="currentServicePage = page"
+              :class="['page-btn', { active: currentServicePage === page }]"
+              :aria-label="`صفحه ${page}`"
+              :aria-current="currentServicePage === page ? 'page' : null"
+            >
+              {{ page }}
+            </button>
+          </div>
+          
+          <button 
+            @click="currentServicePage++" 
+            :disabled="currentServicePage === totalServicePages"
+            class="pagination-btn"
+            aria-label="صفحه بعد"
+          >
+            بعدی
+          </button>
+        </nav>
+      </div>
+    </section>
+
+    <!-- Certificates Section -->
+    <section v-if="activeTab === 'certificates'" class="archive-content">
+      <div class="container">
+        <!-- Loading state -->
+        <div v-if="certificatesLoading" class="loading-state">
+          <div class="spinner"></div>
+          <p>در حال بارگیری گواهینامه‌ها...</p>
+        </div>
+        
+        <!-- Error state -->
+        <div v-if="certificatesError && !certificatesLoading" class="error-state">
+          <p>{{ certificatesError }}</p>
+        </div>
+
+        <!-- Search and Filter -->
+        <div v-if="!certificatesLoading" class="archive-controls">
+          <div class="search-box">
+            <label for="certificates-search" class="sr-only">جستجو در گواهینامه‌ها</label>
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input 
+              id="certificates-search"
+              v-model="certificatesSearchQuery" 
+              type="search" 
+              placeholder="جستجو در گواهینامه‌ها..."
+              class="search-input"
+              aria-label="جستجو در گواهینامه‌ها"
+            />
+          </div>
+          
+          <div class="filter-buttons" role="group" aria-label="دسته‌بندی گواهینامه‌ها">
+            <button 
+              v-for="category in certificateCategories" 
+              :key="category"
+              @click="selectedCertificateCategory = category"
+              :class="['filter-btn', { active: selectedCertificateCategory === category }]"
+              :aria-pressed="selectedCertificateCategory === category"
+            >
+              {{ category }}
+            </button>
+          </div>
+        </div>
+
+        <div class="results-info" role="status" aria-live="polite">
+          <span class="results-count">{{ filteredCertificates.length }} گواهینامه یافت شد</span>
+        </div>
+
+        <!-- Certificates Grid -->
+        <TransitionGroup 
+          name="certificates-list" 
+          tag="div" 
+          class="certificates-grid"
+          role="list"
+        >
+          <div
+            v-for="cert in paginatedCertificates" 
+            :key="cert.id"
+            class="certificate-card"
+            itemscope 
+            itemtype="https://schema.org/EducationalOccupationalCredential"
+            role="listitem"
+          >
+            <ImageSlider 
+              class="certificate-image"
+              :image="cert.image"
+              :images="cert.images"
+              :icon="cert.icon"
+              :gradient="cert.gradient"
+              itemprop="image"
+            />
+            
+            <div class="certificate-content">
+              <h2 class="certificate-title" itemprop="name">{{ cert.title }}</h2>
+              <p class="certificate-description" itemprop="description">{{ cert.description }}</p>
+              <div class="certificate-meta">
+                <span class="certificate-category">{{ cert.category }}</span>
+                <time 
+                  v-if="cert.date"
+                  :datetime="cert.date" 
+                  class="certificate-date"
+                  itemprop="validFrom"
+                >
+                  {{ cert.date }}
+                </time>
+              </div>
+            </div>
+          </div>
+        </TransitionGroup>
+
+        <!-- Pagination -->
+        <nav 
+          v-if="filteredCertificates.length > itemsPerPage" 
+          class="pagination"
+          aria-label="صفحه‌بندی گواهینامه‌ها"
+        >
+          <button 
+            @click="currentCertificatePage--" 
+            :disabled="currentCertificatePage === 1"
+            class="pagination-btn"
+            aria-label="صفحه قبل"
+          >
+            قبلی
+          </button>
+          
+          <div class="pagination-pages">
+            <button
+              v-for="page in totalCertificatePages"
+              :key="page"
+              @click="currentCertificatePage = page"
+              :class="['page-btn', { active: currentCertificatePage === page }]"
+              :aria-label="`صفحه ${page}`"
+              :aria-current="currentCertificatePage === page ? 'page' : null"
+            >
+              {{ page }}
+            </button>
+          </div>
+          
+          <button 
+            @click="currentCertificatePage++" 
+            :disabled="currentCertificatePage === totalCertificatePages"
+            class="pagination-btn"
+            aria-label="صفحه بعد"
+          >
+            بعدی
+          </button>
+        </nav>
+      </div>
+    </section>
+
     <Footer />
   </div>
 </template>
@@ -378,7 +653,7 @@
 <script setup>
 import { ref, computed, inject, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getArticles, getGalleryItems, getSlider } from '../api/services'
+import { getArticles, getGalleryItems, getSlider, getServices, getCertificates } from '../api/services'
 import ImageSlider from '../components/ImageSlider.vue'
 import Navbar from '../components/Navbar.vue'
 import Footer from '../components/Footer.vue'
@@ -412,6 +687,24 @@ const galleryError = ref(null)
 const galleryCategories = ref(['همه'])
 const galleryItems = ref([])
 
+// Services state
+const servicesSearchQuery = ref('')
+const selectedServiceCategory = ref('همه')
+const currentServicePage = ref(1)
+const servicesLoading = ref(true)
+const servicesError = ref(null)
+const serviceCategories = ref(['همه'])
+const services = ref([])
+
+// Certificates state
+const certificatesSearchQuery = ref('')
+const selectedCertificateCategory = ref('همه')
+const currentCertificatePage = ref(1)
+const certificatesLoading = ref(true)
+const certificatesError = ref(null)
+const certificateCategories = ref(['همه'])
+const certificates = ref([])
+
 const itemsPerPage = 12
 
 // Switch between tabs
@@ -419,6 +712,8 @@ const switchTab = (tab) => {
   activeTab.value = tab
   currentArticlePage.value = 1
   currentGalleryPage.value = 1
+  currentServicePage.value = 1
+  currentCertificatePage.value = 1
   
   // Update URL without full navigation
   router.push({ query: { tab } })
@@ -431,11 +726,19 @@ const switchTab = (tab) => {
 const updateMetaTags = () => {
   const title = activeTab.value === 'articles' 
     ? 'مقالات و آموزش‌های BIM | مهندسین مشاور دانش‌بنیان'
-    : 'گالری پروژه‌های BIM | نمونه کارهای شرکت'
+    : activeTab.value === 'gallery'
+    ? 'گالری پروژه‌های BIM | نمونه کارهای شرکت'
+    : activeTab.value === 'services'
+    ? 'خدمات مهندسی BIM | مهندسین مشاور دانش‌بنیان'
+    : 'گواهینامه‌ها و افتخارات | مهندسین مشاور دانش‌بنیان'
   
   const description = activeTab.value === 'articles'
     ? 'مقالات تخصصی و آموزشی در زمینه مدل‌سازی اطلاعات ساختمان (BIM)، طراحی معماری، سازه و تاسیسات. آخرین اخبار و روش‌های نوین در صنعت ساخت و ساز'
-    : 'نمونه کارها و پروژه‌های انجام شده با استفاده از فناوری BIM شامل طراحی معماری، مدل‌سازی سه بعدی و مدیریت پروژه‌های ساختمانی'
+    : activeTab.value === 'gallery'
+    ? 'نمونه کارها و پروژه‌های انجام شده با استفاده از فناوری BIM شامل طراحی معماری، مدل‌سازی سه بعدی و مدیریت پروژه‌های ساختمانی'
+    : activeTab.value === 'services'
+    ? 'خدمات مهندسی BIM شامل مشاوره، طراحی، نظارت و اجرای پروژه‌های ساختمانی با استفاده از فناوری‌های پیشرفته'
+    : 'گواهینامه‌ها، افتخارات و دستاوردهای شرکت در زمینه مهندسی BIM و ساخت و ساز'
   
   document.title = title
   
@@ -512,6 +815,66 @@ const totalGalleryPages = computed(() => {
   return Math.ceil(filteredGalleryItems.value.length / itemsPerPage)
 })
 
+// Services computed properties
+const filteredServices = computed(() => {
+  let filtered = services.value
+
+  if (selectedServiceCategory.value !== 'همه') {
+    filtered = filtered.filter(service => service.category === selectedServiceCategory.value)
+  }
+
+  if (servicesSearchQuery.value) {
+    const query = servicesSearchQuery.value.toLowerCase()
+    filtered = filtered.filter(service =>
+      service.title.toLowerCase().includes(query) ||
+      service.description.toLowerCase().includes(query) ||
+      (service.tags && service.tags.some(tag => tag.toLowerCase().includes(query)))
+    )
+  }
+
+  return filtered
+})
+
+const paginatedServices = computed(() => {
+  const start = (currentServicePage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return filteredServices.value.slice(start, end)
+})
+
+const totalServicePages = computed(() => {
+  return Math.ceil(filteredServices.value.length / itemsPerPage)
+})
+
+// Certificates computed properties
+const filteredCertificates = computed(() => {
+  let filtered = certificates.value
+
+  if (selectedCertificateCategory.value !== 'همه') {
+    filtered = filtered.filter(cert => cert.category === selectedCertificateCategory.value)
+  }
+
+  if (certificatesSearchQuery.value) {
+    const query = certificatesSearchQuery.value.toLowerCase()
+    filtered = filtered.filter(cert =>
+      cert.title.toLowerCase().includes(query) ||
+      cert.description.toLowerCase().includes(query) ||
+      (cert.tags && cert.tags.some(tag => tag.toLowerCase().includes(query)))
+    )
+  }
+
+  return filtered
+})
+
+const paginatedCertificates = computed(() => {
+  const start = (currentCertificatePage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return filteredCertificates.value.slice(start, end)
+})
+
+const totalCertificatePages = computed(() => {
+  return Math.ceil(filteredCertificates.value.length / itemsPerPage)
+})
+
 // Enrich article with slider images
 const enrichArticleWithSlider = async (article) => {
   if (article.slider_id) {
@@ -560,6 +923,54 @@ const enrichGalleryItemWithSlider = async (item) => {
   return item
 }
 
+// Enrich service with slider images
+const enrichServiceWithSlider = async (service) => {
+  if (service.slider_id) {
+    try {
+      const sliderResponse = await getSlider(service.slider_id)
+      if (sliderResponse.data && sliderResponse.data.images) {
+        return {
+          ...service,
+          images: sliderResponse.data.images
+        }
+      }
+    } catch (err) {
+      console.error('Error loading slider:', err)
+    }
+  }
+  if (service.image && !service.images) {
+    return {
+      ...service,
+      images: [service.image]
+    }
+  }
+  return service
+}
+
+// Enrich certificate with slider images
+const enrichCertificateWithSlider = async (cert) => {
+  if (cert.slider_id) {
+    try {
+      const sliderResponse = await getSlider(cert.slider_id)
+      if (sliderResponse.data && sliderResponse.data.images) {
+        return {
+          ...cert,
+          images: sliderResponse.data.images
+        }
+      }
+    } catch (err) {
+      console.error('Error loading slider:', err)
+    }
+  }
+  if (cert.image && !cert.images) {
+    return {
+      ...cert,
+      images: [cert.image]
+    }
+  }
+  return cert
+}
+
 // Fetch articles from API
 const fetchArticles = async () => {
   try {
@@ -604,15 +1015,65 @@ const fetchGalleryItems = async () => {
   }
 }
 
+// Fetch services from API
+const fetchServices = async () => {
+  try {
+    servicesLoading.value = true
+    servicesError.value = null
+    const response = await getServices()
+    let items = response.data || []
+    
+    items = await Promise.all(items.map(service => enrichServiceWithSlider(service)))
+    
+    services.value = items
+    
+    const cats = ['همه', ...new Set(services.value.map(s => s.category))]
+    serviceCategories.value = cats
+  } catch (err) {
+    console.error('Error fetching services:', err)
+    servicesError.value = 'خطا در بارگیری خدمات'
+  } finally {
+    servicesLoading.value = false
+  }
+}
+
+// Fetch certificates from API
+const fetchCertificates = async () => {
+  try {
+    certificatesLoading.value = true
+    certificatesError.value = null
+    const response = await getCertificates()
+    let items = response.data || []
+    
+    items = await Promise.all(items.map(cert => enrichCertificateWithSlider(cert)))
+    
+    certificates.value = items
+    
+    const cats = ['همه', ...new Set(certificates.value.map(c => c.category))]
+    certificateCategories.value = cats
+  } catch (err) {
+    console.error('Error fetching certificates:', err)
+    certificatesError.value = 'خطا در بارگیری گواهینامه‌ها'
+  } finally {
+    certificatesLoading.value = false
+  }
+}
+
 // Initialize from URL query
 onMounted(() => {
   // Check URL query for active tab
   if (route.query.tab === 'gallery') {
     activeTab.value = 'gallery'
+  } else if (route.query.tab === 'services') {
+    activeTab.value = 'services'
+  } else if (route.query.tab === 'certificates') {
+    activeTab.value = 'certificates'
   }
   
   fetchArticles()
   fetchGalleryItems()
+  fetchServices()
+  fetchCertificates()
   updateMetaTags()
 })
 
@@ -648,7 +1109,7 @@ watch(activeTab, () => {
 }
 
 .archive-hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   padding: 8rem 0 4rem;
   text-align: center;
   color: white;
@@ -734,7 +1195,7 @@ watch(activeTab, () => {
 
 .tab-btn.active {
   background: white;
-  color: #667eea;
+  color: #0ea5e9;
   border-color: white;
 }
 
@@ -759,7 +1220,7 @@ watch(activeTab, () => {
   width: 50px;
   height: 50px;
   border: 4px solid rgba(102, 126, 234, 0.1);
-  border-top-color: #667eea;
+  border-top-color: #0ea5e9;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -816,7 +1277,7 @@ watch(activeTab, () => {
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0ea5e9;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -847,14 +1308,14 @@ watch(activeTab, () => {
 }
 
 .filter-btn:hover {
-  border-color: #667eea;
-  color: #667eea;
+  border-color: #0ea5e9;
+  color: #0ea5e9;
 }
 
 .filter-btn.active {
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
-  border-color: #667eea;
+  border-color: #0ea5e9;
 }
 
 .active-indicator {
@@ -887,7 +1348,7 @@ watch(activeTab, () => {
 
 .sort-select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0ea5e9;
 }
 
 .view-toggle {
@@ -915,7 +1376,7 @@ watch(activeTab, () => {
 }
 
 .view-toggle button.active {
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
 }
 
@@ -1071,7 +1532,7 @@ watch(activeTab, () => {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
   display: flex;
   align-items: center;
@@ -1090,7 +1551,7 @@ watch(activeTab, () => {
 }
 
 .read-more {
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -1178,7 +1639,7 @@ watch(activeTab, () => {
 .view-btn {
   padding: 0.8rem 1.5rem;
   background: white;
-  color: #667eea;
+  color: #0ea5e9;
   border-radius: 8px;
   font-weight: 600;
   display: inline-block;
@@ -1268,8 +1729,8 @@ watch(activeTab, () => {
 .page-btn {
   padding: 0.6rem 1.2rem;
   background: white;
-  color: #667eea;
-  border: 2px solid #667eea;
+  color: #0ea5e9;
+  border: 2px solid #0ea5e9;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
@@ -1280,12 +1741,12 @@ watch(activeTab, () => {
 .dark-mode .page-btn {
   background: #2d2d2d;
   color: white;
-  border-color: #667eea;
+  border-color: #0ea5e9;
 }
 
 .pagination-btn:hover:not(:disabled),
 .page-btn:hover {
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
 }
 
@@ -1295,8 +1756,200 @@ watch(activeTab, () => {
 }
 
 .page-btn.active {
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
+}
+
+/* Services Grid */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.service-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.dark-mode .service-card {
+  background: #2d2d2d;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.service-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.service-image {
+  width: 100%;
+  height: 200px;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.service-content {
+  flex: 1;
+}
+
+.service-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: #1a1a1a;
+}
+
+.dark-mode .service-title {
+  color: white;
+}
+
+.service-description {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.dark-mode .service-description {
+  color: #ccc;
+}
+
+.service-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.service-category {
+  padding: 0.3rem 0.6rem;
+  background: #f0f0f0;
+  color: #666;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.dark-mode .service-category {
+  background: #3d3d3d;
+  color: #ccc;
+}
+
+/* Certificates Grid */
+.certificates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.certificate-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.dark-mode .certificate-card {
+  background: #2d2d2d;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.certificate-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.certificate-image {
+  width: 100%;
+  height: 200px;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+}
+
+.certificate-content {
+  padding: 1.5rem;
+}
+
+.certificate-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: #1a1a1a;
+}
+
+.dark-mode .certificate-title {
+  color: white;
+}
+
+.certificate-description {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dark-mode .certificate-description {
+  color: #ccc;
+}
+
+.certificate-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.certificate-category {
+  padding: 0.3rem 0.6rem;
+  background: #f0f0f0;
+  color: #666;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.dark-mode .certificate-category {
+  background: #3d3d3d;
+  color: #ccc;
+}
+
+.certificate-date {
+  color: #0ea5e9;
+  font-weight: 600;
 }
 
 .pagination-pages {

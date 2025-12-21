@@ -1,9 +1,32 @@
 <template>
   <section id="home" class="hero">
     <div class="hero-bg">
-      <div class="gradient-orb orb-1"></div>
-      <div class="gradient-orb orb-2"></div>
-      <div class="gradient-orb orb-3"></div>
+      <div v-if="sliderImages.length > 0" class="hero-slider">
+        <div
+          v-for="(img, idx) in sliderImages"
+          :key="idx"
+          class="slide"
+          :class="{ active: idx === activeIndex }"
+          :style="{ backgroundImage: `url(${img})` }"
+        ></div>
+        <div class="slider-overlay"></div>
+        
+        <!-- Progress Bar -->
+        <div class="slider-progress">
+          <div 
+            v-for="(img, idx) in sliderImages" 
+            :key="idx"
+            class="progress-dot"
+            :class="{ active: idx === activeIndex }"
+            @click="setActiveSlide(idx)"
+          ></div>
+        </div>
+      </div>
+      <div v-else class="hero-orbs">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+      </div>
     </div>
     
     <div class="container">
@@ -48,11 +71,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import VideoModal from './VideoModal.vue'
+import { getSliders } from '../api/services'
 
 const showVideoModal = ref(false)
 const featuredVideo = ref(null)
+const sliderImages = ref([])
+const activeIndex = ref(0)
+let rotateTimer = null
 
 onMounted(async () => {
   // بارگذاری ویدیوی اول (اولویت دار)
@@ -69,8 +96,39 @@ onMounted(async () => {
   }
 })
 
+onMounted(async () => {
+  try {
+    const res = await getSliders()
+    const sliders = res?.data || []
+    // find slider by name that contains 'hero' or 'header' (case-insensitive)
+    const heroSlider = sliders.find(s => s.name && /hero|header|home/i.test(s.name))
+    if (heroSlider && Array.isArray(heroSlider.images) && heroSlider.images.length > 0) {
+      sliderImages.value = heroSlider.images
+      // start rotation
+      rotateTimer = setInterval(() => {
+        activeIndex.value = (activeIndex.value + 1) % sliderImages.value.length
+      }, 6000)
+    }
+  } catch (err) {
+    console.error('خطا در بارگذاری اسلایدر هدر:', err)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (rotateTimer) clearInterval(rotateTimer)
+})
+
 const openVideoModal = () => {
   showVideoModal.value = true
+}
+
+const setActiveSlide = (index) => {
+  activeIndex.value = index
+  // Reset timer
+  if (rotateTimer) clearInterval(rotateTimer)
+  rotateTimer = setInterval(() => {
+    activeIndex.value = (activeIndex.value + 1) % sliderImages.value.length
+  }, 6000)
 }
 </script>
 
@@ -93,18 +151,87 @@ const openVideoModal = () => {
   overflow: hidden;
 }
 
+.hero-slider { 
+  position: absolute; 
+  inset: 0; 
+  display: block; 
+  width: 100%;
+  height: 100%;
+}
+
+.hero-slider .slide {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+  animation: slideBackground 8s ease-in-out infinite;
+}
+
+.hero-slider .slide.active { 
+  opacity: 1;
+  animation: slideBackground 8s ease-in-out infinite;
+}
+
+.slider-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,0.35) 0%, rgba(102, 126, 234, 0.25) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.slider-progress {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 2;
+}
+
+.progress-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.progress-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.2);
+}
+
+.progress-dot.active {
+  background: #0ea5e9;
+  transform: scale(1.3);
+}
+
+.hero-orbs { 
+  position: absolute; 
+  inset: 0; 
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
 .gradient-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.6;
+  filter: blur(70px);
+  opacity: 0.5;
   animation: float 20s ease-in-out infinite;
 }
 
 .orb-1 {
   width: 500px;
   height: 500px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   top: -200px;
   right: -100px;
   animation-delay: 0s;
@@ -113,7 +240,7 @@ const openVideoModal = () => {
 .orb-2 {
   width: 400px;
   height: 400px;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   bottom: -150px;
   left: -100px;
   animation-delay: 5s;
@@ -127,6 +254,18 @@ const openVideoModal = () => {
   left: 50%;
   transform: translate(-50%, -50%);
   animation-delay: 10s;
+}
+
+@keyframes slideBackground {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    transform: translateX(15px) scale(1.02);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+  }
 }
 
 @keyframes float {
@@ -146,34 +285,37 @@ const openVideoModal = () => {
   margin: 0 auto;
   padding: 0 2rem;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .hero-content {
   text-align: center;
   max-width: 800px;
   margin: 0 auto;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(102, 126, 234, 0.1);
-  border: 1px solid rgba(102, 126, 234, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 0.5rem 1.5rem;
   border-radius: 50px;
   font-size: 0.9rem;
-  font-weight: 500;
-  color: #667eea;
+  font-weight: 600;
+  color: #fff;
   margin-bottom: 2rem;
   animation: fadeInDown 0.8s ease;
+  backdrop-filter: blur(8px);
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .badge-dot {
   width: 8px;
   height: 8px;
-  background: #667eea;
+  background: #4ade80;
   border-radius: 50%;
   animation: pulse 2s ease-in-out infinite;
 }
@@ -194,16 +336,14 @@ const openVideoModal = () => {
   font-weight: 800;
   line-height: 1.2;
   margin-bottom: 1.5rem;
-  color: #1a1a1a;
+  color: #fff;
   animation: fadeInUp 0.8s ease 0.2s both;
-}
-
-.dark-mode .hero-title {
-  color: #ffffff;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  letter-spacing: -0.02em;
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -213,13 +353,11 @@ const openVideoModal = () => {
 .hero-subtitle {
   font-size: 1.25rem;
   line-height: 1.8;
-  color: #6c757d;
+  color: rgba(255, 255, 255, 0.95);
   margin-bottom: 3rem;
   animation: fadeInUp 0.8s ease 0.4s both;
-}
-
-.dark-mode .hero-subtitle {
-  color: #a0a0a0;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
 }
 
 .hero-buttons {
@@ -242,10 +380,11 @@ const openVideoModal = () => {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
@@ -264,18 +403,15 @@ const openVideoModal = () => {
 }
 
 .btn-secondary {
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
-  border: 2px solid rgba(102, 126, 234, 0.3);
-}
-
-.dark-mode .btn-secondary {
-  color: #a0a0ff;
-  background: rgba(102, 126, 234, 0.15);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
 }
 
 .btn-secondary:hover {
-  background: rgba(102, 126, 234, 0.2);
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-3px);
 }
 
@@ -299,20 +435,18 @@ const openVideoModal = () => {
 .stat-value {
   font-size: 2.5rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 0.5rem;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .stat-label {
   font-size: 0.9rem;
-  color: #6c757d;
-}
-
-.dark-mode .stat-label {
-  color: #a0a0a0;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 @keyframes fadeInUp {
@@ -381,7 +515,7 @@ const openVideoModal = () => {
   }
   
   .gradient-orb {
-    filter: blur(60px);
+    filter: blur(50px);
   }
   
   .orb-1 {

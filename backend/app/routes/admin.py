@@ -681,3 +681,171 @@ def delete_user_admin(
     db.delete(db_user)
     db.commit()
     return {"success": True, "message": "کاربر حذف شد"}
+
+# ==================== تنظیمات عمومی ====================
+
+@router.get("/settings", response_model=List[schemas.Settings])
+def get_all_settings(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """دریافت تمام تنظیمات"""
+    settings = db.query(models.Settings).all()
+    return settings
+
+
+@router.get("/settings/{key}", response_model=schemas.Settings)
+def get_setting(
+    key: str,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """دریافت تنظیم خاص"""
+    setting = db.query(models.Settings).filter(models.Settings.key == key).first()
+    if not setting:
+        raise HTTPException(status_code=404, detail="تنظیم یافت نشد")
+    return setting
+
+
+@router.post("/settings", response_model=schemas.Settings, status_code=201)
+def create_setting(
+    setting: schemas.SettingsCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """ایجاد تنظیم جدید"""
+    # بررسی تکراری بودن key
+    existing = db.query(models.Settings).filter(models.Settings.key == setting.key).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="این کلید قبلاً وجود دارد")
+    
+    db_setting = models.Settings(**setting.dict())
+    db.add(db_setting)
+    db.commit()
+    db.refresh(db_setting)
+    return db_setting
+
+
+@router.put("/settings/{key}", response_model=schemas.Settings)
+def update_setting(
+    key: str,
+    setting: schemas.SettingsUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """ویرایش تنظیم"""
+    db_setting = db.query(models.Settings).filter(models.Settings.key == key).first()
+    if not db_setting:
+        # اگر وجود نداشت، یک تنظیم جدید ایجاد کن
+        db_setting = models.Settings(key=key, value=setting.value, description=setting.description)
+        db.add(db_setting)
+    else:
+        if setting.value is not None:
+            db_setting.value = setting.value
+        if setting.description is not None:
+            db_setting.description = setting.description
+    
+    db.commit()
+    db.refresh(db_setting)
+    return db_setting
+
+
+@router.delete("/settings/{key}")
+def delete_setting(
+    key: str,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """حذف تنظیم"""
+    db_setting = db.query(models.Settings).filter(models.Settings.key == key).first()
+    if not db_setting:
+        raise HTTPException(status_code=404, detail="تنظیم یافت نشد")
+    
+    db.delete(db_setting)
+    db.commit()
+    return {"success": True, "message": "تنظیم حذف شد"}
+
+
+# ==================== آپلود فایل ====================
+
+@router.post("/upload")
+async def upload_file(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_admin_user)
+):
+    """
+    آپلود فایل (تصویر، مدل 3D، و...)
+    فرمت‌های پشتیبانی شده:
+    - تصویر: jpg, jpeg, png, gif, webp
+    - مدل 3D: glb, gltf, obj
+    """
+    # مسیر آپلود
+    upload_dir = Path(__file__).parent.parent.parent / "backend" / "uploads"
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    
+    # تنظیم فایل‌های مجاز
+    allowed_extensions = {
+        # تصاویر
+        'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg',
+        # مدل‌های 3D
+        'glb', 'gltf', 'obj', 'mtl', 'fbx',
+        # فایل‌های متن
+        'bin', 'json'
+    }
+    
+    # بررسی فایل
+    file_extension = file.filename.split('.')[-1].lower() if '.' in file.filename else ''
+    
+    if file_extension not in allowed_extensions:
+        raise HTTPException(
+            status_code=400,
+            detail=f"فرمت فایل {file_extension} پشتیبانی نمی‌شود"
+        )
+    
+    # بررسی اندازه (حداکثر 100MB)
+    max_size = 100 * 1024 * 1024
+    file_size = 0
+    
+    # ایجاد نام فایل منحصر به فرد
+    import uuid
+    unique_filename = f"{uuid.uuid4().hex}_{file.filename}"
+    file_path = upload_dir / unique_filename
+    
+    try:
+        # ذخیره فایل
+        with open(file_path, "wb") as buffer:
+            while True:
+                chunk = await file.file.read(8192)
+                if not chunk:
+                    break
+                file_size += len(chunk)
+                
+                if file_size > max_size:
+                    file_path.unlink()  # حذف فایل
+                    raise HTTPException(
+                        status_code=413,
+                        detail="اندازه فایل بیش از 100MB است"
+                    )
+                
+                buffer.write(chunk)
+        
+        # URL عمومی - فقط نام فایل و /uploads
+        public_url = f"/uploads/{unique_filename}"
+        
+        return {
+            "success": True,
+            "filename": file.filename,
+            "stored_filename": unique_filename,
+            "url": public_url,
+            "size": file_size,
+            "content_type": file.content_type
+        }
+    
+    except Exception as e:
+        if file_path.exists():
+            file_path.unlink()
+        raise HTTPException(
+            status_code=500,
+            detail=f"خطا در آپلود فایل: {str(e)}"
+        )

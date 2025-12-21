@@ -5,6 +5,9 @@ import Home from '../views/Home.vue'
 import MediaArchive from '../views/MediaArchive.vue'
 import ArticleDetailPage from '../views/ArticleDetailPage.vue'
 import ProjectDetailPage from '../views/ProjectDetailPage.vue'
+import ServiceDetailPage from '../views/ServiceDetailPage.vue'
+import CertificateDetailPage from '../views/CertificateDetailPage.vue'
+import ContactPage from '../views/ContactPage.vue'
 import GalleryArchive from '../views/GalleryArchive.vue'
 import ArticlesArchive from '../views/ArticlesArchive.vue'
 import AdminLogin from '../views/AdminLogin.vue'
@@ -15,10 +18,11 @@ import AdminTestimonials from '../views/AdminTestimonials.vue'
 import AdminContacts from '../views/AdminContacts.vue'
 import AdminSliders from '../views/AdminSliders.vue'
 import AdminCertificates from '../views/AdminCertificates.vue'
-import AdminComments from '../views/AdminComments.vue'
 import AdminVideos from '../views/AdminVideos.vue'
 import AdminReports from '../views/AdminReports.vue'
 import AdminUsers from '../views/AdminUsers.vue'
+import AdminSettings from '../views/AdminSettings.vue'
+import AdminHeroSliders from '../views/AdminHeroSliders.vue'
 import AdminLayout from '../components/AdminLayout.vue'
 import { logVisit } from '../api/services'
 
@@ -74,6 +78,33 @@ const routes = [
     meta: {
       title: 'پروژه | گالری مهندسین مشاور BIM',
       description: 'نمونه کارها و پروژه‌های انجام شده با فناوری BIM'
+    }
+  },
+  {
+    path: '/service/:id',
+    name: 'ServiceDetail',
+    component: ServiceDetailPage,
+    meta: {
+      title: 'خدمت | مهندسین مشاور دانش‌بنیان BIM',
+      description: 'خدمات حرفه‌ای BIM و طراحی'
+    }
+  },
+  {
+    path: '/certificate/:id',
+    name: 'CertificateDetail',
+    component: CertificateDetailPage,
+    meta: {
+      title: 'گواهینامه | مهندسین مشاور دانش‌بنیان BIM',
+      description: 'گواهینامه‌ها و استانداردهای بین‌المللی'
+    }
+  },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: ContactPage,
+    meta: {
+      title: 'تماس با ما | مهندسین مشاور دانش‌بنیان BIM',
+      description: 'فرم تماس و شماره‌های تماس شعبه‌های مختلف'
     }
   },
   {
@@ -146,11 +177,6 @@ const routes = [
         component: AdminCertificates
       },
       {
-        path: 'comments',
-        name: 'AdminComments',
-        component: AdminComments
-      },
-      {
         path: 'videos',
         name: 'AdminVideos',
         component: AdminVideos
@@ -164,6 +190,16 @@ const routes = [
         path: 'services',
         name: 'AdminServices',
         component: () => import('../views/AdminServices.vue')
+      },
+      {
+        path: 'settings',
+        name: 'AdminSettings',
+        component: AdminSettings
+      },
+      {
+        path: 'hero-sliders',
+        name: 'AdminHeroSliders',
+        component: AdminHeroSliders
       }
     ]
   }

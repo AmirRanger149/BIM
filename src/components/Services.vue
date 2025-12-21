@@ -7,11 +7,11 @@
       </div>
       
       <div class="services-grid">
-        <div 
+        <router-link 
           v-for="service in services" 
           :key="service.id"
+          :to="`/service/${service.id}`"
           class="service-card"
-          @click="openService(service)"
         >
           <ImageSlider
             :image="service.image"
@@ -28,61 +28,18 @@
               <button class="service-btn">اطلاعات بیشتر</button>
             </div>
           </div>
-        </div>
+        </router-link>
       </div>
     </div>
-    
-    <!-- Service Modal -->
-    <Teleport to="body">
-      <Transition name="modal">
-        <div v-if="selectedService" class="service-modal-overlay" @click="closeService">
-          <div class="service-modal-content" @click.stop>
-            <button class="modal-close" @click="closeService">✕</button>
-            
-            <ImageSlider
-              :image="selectedService.image"
-              :images="selectedService.images"
-              :icon="selectedService.icon"
-              :gradient="selectedService.gradient"
-              class="service-modal-image"
-            />
-            
-            <div class="service-modal-body">
-              <h2 class="service-modal-title">{{ selectedService.title }}</h2>
-              <p class="service-modal-description">{{ selectedService.description }}</p>
-              
-              <div v-if="selectedService.features && selectedService.features.length > 0" class="service-features">
-                <h3 class="features-title">ویژگی‌ها:</h3>
-                <ul class="features-list">
-                  <li v-for="(feature, index) in selectedService.features" :key="index">
-                    <span class="feature-icon">✓</span>
-                    {{ feature }}
-                  </li>
-                </ul>
-              </div>
-              
-              <div class="service-modal-footer">
-                <div class="price-box" v-if="selectedService.price">
-                  <span class="price-label">قیمت:</span>
-                  <span class="price-value">{{ selectedService.price }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Transition>
-    </Teleport>
   </section>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getSlider } from '../api/services'
-import apiClient from '../api/client'
+import { getSlider, getServices } from '../api/services'
 import ImageSlider from './ImageSlider.vue'
 
 const services = ref([])
-const selectedService = ref(null)
 const loading = ref(true)
 
 const enrichServiceWithSlider = async (service) => {
@@ -117,9 +74,9 @@ const enrichServiceWithSlider = async (service) => {
 const fetchServices = async () => {
   try {
     loading.value = true
-    const response = await apiClient.get('/api/services')
-    const data = response.data
-    const servicesList = data.data || []
+    const response = await getServices()
+    const data = response.data || response
+    const servicesList = Array.isArray(data) ? data : (data.data || [])
     
     // Enrich services with slider images
     const enrichedServices = await Promise.all(
@@ -133,14 +90,6 @@ const fetchServices = async () => {
   } finally {
     loading.value = false
   }
-}
-
-const openService = async (service) => {
-  selectedService.value = service
-}
-
-const closeService = () => {
-  selectedService.value = null
 }
 
 onMounted(() => {
@@ -181,7 +130,7 @@ onMounted(() => {
   transform: translateX(-50%);
   width: 60px;
   height: 4px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   border-radius: 2px;
 }
 
@@ -264,12 +213,12 @@ onMounted(() => {
 .service-price {
   font-size: 1rem;
   font-weight: 700;
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 .service-btn {
   padding: 0.625rem 1.25rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -397,7 +346,7 @@ onMounted(() => {
 .feature-icon {
   width: 20px;
   height: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -433,7 +382,7 @@ onMounted(() => {
 .price-value {
   font-size: 1.5rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -441,7 +390,7 @@ onMounted(() => {
 
 .contact-btn {
   padding: 1rem 2.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border: none;
   border-radius: 12px;

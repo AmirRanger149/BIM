@@ -14,7 +14,6 @@
         <p class="section-subtitle">جدیدترین اخبار و مقالات تخصصی عمران و ساختمان</p>
         <router-link v-if="showViewAll" to="/articles" class="view-all-btn">
           مشاهده همه مقالات
-          <span class="btn-icon">→</span>
         </router-link>
       </div>
       
@@ -315,7 +314,7 @@ const handleSortChange = (newSort) => {
   gap: 0.75rem;
   margin-top: 1.5rem;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border-radius: 50px;
   font-weight: 600;
@@ -378,7 +377,7 @@ const handleSortChange = (newSort) => {
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0ea5e9;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -451,7 +450,7 @@ const handleSortChange = (newSort) => {
 }
 
 .filter-tab.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   border-color: transparent;
   color: white;
   transform: scale(1.05);
@@ -459,8 +458,8 @@ const handleSortChange = (newSort) => {
 }
 
 .filter-tab:hover:not(.active) {
-  border-color: #667eea;
-  color: #667eea;
+  border-color: #0ea5e9;
+  color: #0ea5e9;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
@@ -489,7 +488,7 @@ const handleSortChange = (newSort) => {
 
 .sort-select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0ea5e9;
 }
 
 .results-info {
@@ -705,7 +704,7 @@ const handleSortChange = (newSort) => {
 }
 
 .article-card:hover .article-title {
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 .article-excerpt {
@@ -732,7 +731,7 @@ const handleSortChange = (newSort) => {
   background: rgba(102, 126, 234, 0.1);
   border-radius: 50px;
   font-size: 0.75rem;
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: 500;
   transition: all 0.3s ease;
 }
@@ -764,7 +763,7 @@ const handleSortChange = (newSort) => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -791,14 +790,14 @@ const handleSortChange = (newSort) => {
 }
 
 .article-card:hover .author-name {
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 .read-more {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #667eea;
+  color: #0ea5e9;
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
@@ -845,7 +844,7 @@ const handleSortChange = (newSort) => {
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 2.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border: none;
   border-radius: 50px;
@@ -959,7 +958,7 @@ const handleSortChange = (newSort) => {
   width: 40px;
   height: 40px;
   border: 4px solid rgba(102, 126, 234, 0.2);
-  border-top-color: #667eea;
+  border-top-color: #0ea5e9;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

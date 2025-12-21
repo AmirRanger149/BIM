@@ -30,7 +30,7 @@ const stats = ref([
     displayValue: 0,
     suffix: '+',
     label: 'پروژه موفق',
-    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    gradient: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)'
   },
   {
     id: 2,
@@ -39,7 +39,7 @@ const stats = ref([
     displayValue: 0,
     suffix: '%',
     label: 'رضایت مشتریان',
-    gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+    gradient: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)'
   },
   {
     id: 3,
@@ -88,7 +88,7 @@ onMounted(() => {
 <style scoped>
 .stats-section {
   padding: 4rem 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   position: relative;
   overflow: hidden;
 }

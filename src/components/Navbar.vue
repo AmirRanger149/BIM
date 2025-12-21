@@ -2,10 +2,10 @@
   <nav class="navbar">
     <div class="container">
       <div class="nav-content">
-        <div class="logo">
-          <span class="logo-icon">🏗️</span>
-          <span class="logo-text">BIM</span>
-        </div>
+        <router-link to="/" class="logo">
+          <img v-if="logoUrl" :src="logoUrl" :alt="'Logo'" class="logo-image" />
+          <span v-else class="logo-icon">🏗️</span>
+        </router-link>
         
         <ul class="nav-links" :class="{ 'active': mobileMenuOpen }">
           <li><router-link to="/" class="nav-link" @click="handleNavClick('#home')">خانه</router-link></li>
@@ -13,14 +13,14 @@
           <li><router-link to="/media?tab=gallery" class="nav-link" @click="closeMobileMenu">گالری</router-link></li>
           <li><router-link to="/media?tab=articles" class="nav-link" @click="closeMobileMenu">مقالات</router-link></li>
           <li><a href="#" class="nav-link" @click.prevent="handleNavClick('#certificates')">گواهینامه‌ها</a></li>
-          <li><a href="#" class="nav-link" @click.prevent="handleNavClick('#contact')">تماس</a></li>
+          <li><router-link to="/contact" class="nav-link" @click="closeMobileMenu">تماس</router-link></li>
         </ul>
 
         <div class="nav-actions">
           <button @click="$emit('toggle-theme')" class="theme-toggle" aria-label="تغییر تم">
             <transition name="fade" mode="out-in">
-              <span v-if="isDark" key="sun" class="theme-icon">☀️</span>
-              <span v-else key="moon" class="theme-icon">🌙</span>
+              <span v-if="isDark" key="sun" class="theme-icon">☀</span>
+              <span v-else key="moon" class="theme-icon">☽</span>
             </transition>
           </button>
           
@@ -38,8 +38,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useSiteSettings } from '../composables/useSiteSettings'
 
 defineProps({
   isDark: Boolean
@@ -50,6 +51,7 @@ defineEmits(['toggle-theme'])
 const router = useRouter()
 const route = useRoute()
 const mobileMenuOpen = ref(false)
+const { logoUrl, loadSettings, addListener } = useSiteSettings()
 
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
@@ -80,6 +82,17 @@ const handleNavClick = (hash) => {
     }
   }
 }
+
+onMounted(() => {
+  loadSettings()
+  addListener(() => {
+    loadSettings()
+  })
+})
+
+watch(() => route.path, () => {
+  closeMobileMenu()
+})
 </script>
 
 <style scoped>
@@ -121,15 +134,28 @@ const handleNavClick = (hash) => {
 .logo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1.5rem;
+  gap: 0.75rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   cursor: pointer;
   transition: transform 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  padding: 0.5rem 0;
+}
+
+.logo-image {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
+  filter: drop-shadow(0 2px 4px rgba(14, 165, 233, 0.2));
 }
 
 .logo:hover {
@@ -168,7 +194,7 @@ const handleNavClick = (hash) => {
   left: 0;
   width: 0;
   height: 2px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   transition: width 0.3s ease;
 }
 
@@ -177,23 +203,23 @@ const handleNavClick = (hash) => {
 }
 
 .nav-link:hover {
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 .theme-toggle {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   border: none;
   padding: 0.6rem 1.2rem;
   border-radius: 50px;
   cursor: pointer;
   font-size: 1.3rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
 }
 
 .theme-toggle:hover {
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
 }
 
 .theme-icon {
@@ -220,7 +246,7 @@ const handleNavClick = (hash) => {
 .hamburger span {
   display: block;
   height: 3px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   border-radius: 3px;
   transition: all 0.3s ease;
 }

@@ -38,6 +38,20 @@ export const getSlider = async (sliderId) => {
   }
 }
 
+/**
+ * دریافت تمام اسلایدرها (عمومی)
+ * @returns {Promise<Object>} { data: [sliders...] }
+ */
+export const getSliders = async () => {
+  try {
+    const response = await apiClient.get('/api/sliders')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching sliders:', error)
+    return { data: [] }
+  }
+}
+
 // ============= ARTICLES API =============
 
 /**
@@ -224,6 +238,37 @@ export const createTestimonial = async (testimonialData) => {
   return response.data
 }
 
+// ============= SERVICES API =============
+
+/**
+ * دریافت لیست تمام خدمات
+ * @returns {Promise<Array>} لیست خدمات
+ */
+export const getServices = async () => {
+  try {
+    const response = await apiClient.get('/api/services')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching services:', error)
+    return { data: [] }
+  }
+}
+
+/**
+ * دریافت یک خدمت با ID
+ * @param {Number} id - شناسه خدمت
+ * @returns {Promise<Object>} خدمت
+ */
+export const getService = async (id) => {
+  try {
+    const response = await apiClient.get(`/api/services/${id}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching service:', error)
+    throw error
+  }
+}
+
 // ============= CERTIFICATES API =============
 
 /**
@@ -240,6 +285,21 @@ export const getCertificates = async () => {
       await delay(300)
       return { data: mockCertificates }
     }
+    throw error
+  }
+}
+
+/**
+ * دریافت یک گواهینامه با ID
+ * @param {Number} id - شناسه گواهینامه
+ * @returns {Promise<Object>} گواهینامه
+ */
+export const getCertificate = async (id) => {
+  try {
+    const response = await apiClient.get(`/api/certificates/${id}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching certificate:', error)
     throw error
   }
 }
@@ -694,6 +754,73 @@ export const deleteAdminUser = async (id) => {
   return response.data
 }
 
+// ============= SETTINGS API =============
+
+/**
+ * دریافت تمام تنظیمات (ادمین)
+ */
+export const getAdminSettings = async () => {
+  try {
+    const response = await apiClient.get('/api/admin/settings')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching settings:', error)
+    return []
+  }
+}
+
+/**
+ * دریافت یک تنظیم خاص (ادمین)
+ */
+export const getAdminSetting = async (key) => {
+  try {
+    const response = await apiClient.get(`/api/admin/settings/${key}`)
+    return response.data
+  } catch (error) {
+    console.error(`Error fetching setting ${key}:`, error)
+    return null
+  }
+}
+
+/**
+ * ایجاد تنظیم جدید (ادمین)
+ */
+export const createAdminSetting = async (settingData) => {
+  try {
+    const response = await apiClient.post('/api/admin/settings', settingData)
+    return response.data
+  } catch (error) {
+    console.error('Error creating setting:', error)
+    throw error
+  }
+}
+
+/**
+ * بروزرسانی تنظیم (ادمین)
+ */
+export const updateAdminSetting = async (key, value) => {
+  try {
+    const response = await apiClient.put(`/api/admin/settings/${key}`, { value })
+    return response.data
+  } catch (error) {
+    console.error(`Error updating setting ${key}:`, error)
+    throw error
+  }
+}
+
+/**
+ * حذف تنظیم (ادمین)
+ */
+export const deleteAdminSetting = async (key) => {
+  try {
+    const response = await apiClient.delete(`/api/admin/settings/${key}`)
+    return response.data
+  } catch (error) {
+    console.error(`Error deleting setting ${key}:`, error)
+    throw error
+  }
+}
+
 // Export admin service
 export const adminService = {
   login: adminLogin,
@@ -738,128 +865,26 @@ export const adminService = {
   getServices: getAdminServices,
   createService: createAdminService,
   updateService: updateAdminService,
-  deleteService: deleteAdminService
+  deleteService: deleteAdminService,
+  
+  // Settings
+  getSettings: getAdminSettings,
+  getSetting: getAdminSetting,
+  createSetting: createAdminSetting,
+  updateSetting: updateAdminSetting,
+  deleteSetting: deleteAdminSetting
 }
 
-// ============= COMMENTS API =============
 
-/**
- * دریافت لیست نظرات
- * @param {Object} params - فیلترها (content_type, content_id, approved_only)
- * @returns {Promise<Array>} لیست نظرات
- */
-export const getComments = async (params = {}) => {
-  try {
-    const response = await apiClient.get('/api/comments', { params })
-    return response.data
-  } catch (error) {
-    console.error('Error fetching comments:', error)
-    return []
-  }
-}
-
-/**
- * دریافت یک نظر با شناسه
- * @param {Number} commentId - شناسه نظر
- * @returns {Promise<Object>} نظر
- */
-export const getComment = async (commentId) => {
-  try {
-    const response = await apiClient.get(`/api/comments/${commentId}`)
-    return response.data
-  } catch (error) {
-    console.error('Error fetching comment:', error)
-    throw error
-  }
-}
-
-/**
- * ایجاد نظر جدید
- * @param {Object} commentData - اطلاعات نظر (name, email, content, rating, content_type, content_id)
- * @returns {Promise<Object>} نظر ایجاد شده
- */
-export const createComment = async (commentData) => {
-  try {
-    const response = await apiClient.post('/api/comments', commentData)
-    return response.data
-  } catch (error) {
-    console.error('Error creating comment:', error)
-    throw error
-  }
-}
-
-/**
- * تایید یا رد نظر (فقط ادمین)
- * @param {Number} commentId - شناسه نظر
- * @returns {Promise<Object>} نظر به‌روزرسانی شده
- */
-export const approveComment = async (commentId) => {
-  try {
-    const response = await apiClient.put(`/api/comments/${commentId}/approve`)
-    return response.data
-  } catch (error) {
-    console.error('Error approving comment:', error)
-    throw error
-  }
-}
-
-/**
- * ویرایش نظر (فقط ادمین)
- * @param {Number} commentId - شناسه نظر
- * @param {Object} updateData - اطلاعات جدید (name, email, content, rating, approved)
- * @returns {Promise<Object>} نظر به‌روزرسانی شده
- */
-export const updateComment = async (commentId, updateData) => {
-  try {
-    console.log(`Sending PUT request to /api/comments/${commentId}`, updateData)
-    const response = await apiClient.put(`/api/comments/${commentId}`, updateData)
-    console.log('Response from updateComment:', response)
-    return response.data
-  } catch (error) {
-    console.error('Error updating comment:', error)
-    console.error('Error response:', error.response)
-    throw error
-  }
-}
-
-/**
- * حذف نظر (فقط ادمین)
- * @param {Number} commentId - شناسه نظر
- * @returns {Promise<Object>} پاسخ حذف
- */
-export const deleteComment = async (commentId) => {
-  try {
-    const response = await apiClient.delete(`/api/comments/${commentId}`)
-    return response.data
-  } catch (error) {
-    console.error('Error deleting comment:', error)
-    throw error
-  }
-}
-
-/**
- * دریافت آمار نظرات (فقط ادمین)
- * @returns {Promise<Object>} آمار نظرات
- */
-export const getCommentStats = async () => {
-  try {
-    const response = await apiClient.get('/api/comments/stats/summary')
-    return response.data
-  } catch (error) {
-    console.error('Error fetching comment stats:', error)
-    return {
-      total: 0,
-      approved: 0,
-      pending: 0,
-      average_rating: 0
-    }
-  }
-}
 
 // Export all services as default
 export default {
   // Admin
   adminService,
+  
+  // Services
+  getServices,
+  getService,
   
   // Articles
   getArticles,
@@ -878,6 +903,7 @@ export default {
   
   // Certificates
   getCertificates,
+  getCertificate,
   
   // Statistics
   getStatistics,
@@ -885,14 +911,5 @@ export default {
   
   // Contact
   sendContactForm,
-  subscribeNewsletter,
-  
-  // Comments
-  getComments,
-  getComment,
-  createComment,
-  approveComment,
-  updateComment,
-  deleteComment,
-  getCommentStats
+  subscribeNewsletter
 }

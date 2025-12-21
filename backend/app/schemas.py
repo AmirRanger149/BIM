@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from typing import Optional, List
 from datetime import datetime
 
@@ -20,6 +20,9 @@ class ArticleBase(BaseModel):
     read_time: Optional[str] = None
     featured: bool = False
     tags: List[str] = []
+    iframe_url: Optional[str] = None  # URL iframe برای نمایش مدل 3D
+    model_url: Optional[str] = None  # URL فایل مدل 3D
+    model_type: str = "auto"  # نوع مدل: gltf, glb, obj, auto
 
 
 class ArticleCreate(ArticleBase):
@@ -41,6 +44,9 @@ class ArticleUpdate(BaseModel):
     read_time: Optional[str] = None
     featured: Optional[bool] = None
     tags: Optional[List[str]] = None
+    iframe_url: Optional[str] = None  # URL iframe برای نمایش مدل 3D
+    model_url: Optional[str] = None  # URL فایل مدل 3D
+    model_type: Optional[str] = None  # نوع مدل
 
 
 class Article(ArticleBase):
@@ -52,10 +58,35 @@ class Article(ArticleBase):
     class Config:
         from_attributes = True
 
+# ============= Settings Schemas =============
+
+class SettingsBase(BaseModel):
+    key: str = Field(..., min_length=1, max_length=100)
+    value: Optional[str] = None
+    description: Optional[str] = None
+
+
+class SettingsCreate(SettingsBase):
+    pass
+
+
+class SettingsUpdate(BaseModel):
+    value: Optional[str] = None
+    description: Optional[str] = None
+
+
+class Settings(SettingsBase):
+    id: int
+    updated_at: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
 
 # ============= Gallery Schemas =============
 
 class GalleryItemBase(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+    
     title: str = Field(..., min_length=1, max_length=255)
     description: str
     full_description: Optional[str] = None  # توضیح کامل با HTML
@@ -68,6 +99,9 @@ class GalleryItemBase(BaseModel):
     date: Optional[str] = None
     duration: Optional[str] = None
     technologies: List[str] = []
+    model_url: Optional[str] = None  # URL فایل مدل 3D
+    model_type: str = "auto"  # نوع مدل: gltf, glb, obj, auto
+    iframe_url: Optional[str] = None  # URL iframe برای نمایش مدل 3D
 
 
 class GalleryItemCreate(GalleryItemBase):
@@ -87,6 +121,9 @@ class GalleryItemUpdate(BaseModel):
     date: Optional[str] = None
     duration: Optional[str] = None
     technologies: Optional[List[str]] = None
+    model_url: Optional[str] = None  # URL فایل مدل 3D
+    model_type: Optional[str] = None  # نوع مدل
+    iframe_url: Optional[str] = None  # URL iframe برای نمایش مدل 3D
 
 
 class GalleryItem(GalleryItemBase):
@@ -350,39 +387,6 @@ class SliderUpdate(BaseModel):
 
 class Slider(SliderBase):
     id: int
-    created_at: datetime
-    updated_at: Optional[datetime] = None
-    
-    class Config:
-        from_attributes = True
-
-
-# ============= Comment Schemas =============
-
-class CommentBase(BaseModel):
-    name: str = Field(..., min_length=1, max_length=100)
-    email: EmailStr
-    content: str = Field(..., min_length=10)
-    rating: int = Field(..., ge=1, le=5)  # امتیاز 1 تا 5
-    content_type: str = Field(..., pattern="^(article|project)$")  # article یا project
-    content_id: int
-
-
-class CommentCreate(CommentBase):
-    pass
-
-
-class CommentUpdate(BaseModel):
-    name: Optional[str] = Field(None, min_length=1, max_length=100)
-    email: Optional[EmailStr] = None
-    content: Optional[str] = Field(None, min_length=10)
-    rating: Optional[int] = Field(None, ge=1, le=5)
-    approved: Optional[bool] = None
-
-
-class Comment(CommentBase):
-    id: int
-    approved: bool
     created_at: datetime
     updated_at: Optional[datetime] = None
     

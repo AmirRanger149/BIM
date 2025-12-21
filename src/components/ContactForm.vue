@@ -260,7 +260,7 @@ const submitForm = async () => {
 .info-icon {
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -302,12 +302,12 @@ const submitForm = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #667eea;
+  color: #0ea5e9;
   transition: all 0.3s ease;
 }
 
 .social-link:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   transform: translateY(-3px);
 }
@@ -369,7 +369,7 @@ const submitForm = async () => {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0ea5e9;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -380,7 +380,7 @@ const submitForm = async () => {
 
 .submit-btn {
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border: none;
   border-radius: 50px;

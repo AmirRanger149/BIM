@@ -4,7 +4,8 @@
       <div class="footer-content">
         <div class="footer-section">
           <div class="footer-logo">
-            <span class="logo-icon">🏗️</span>
+            <img v-if="logoUrl" :src="logoUrl" :alt="'Logo'" class="logo-image" />
+            <span v-else class="logo-icon">🏗️</span>
             <span class="logo-text">مهندسین مشاور BIM</span>
           </div>
           <p class="footer-description">
@@ -33,20 +34,10 @@
         <div class="footer-section">
           <h4 class="footer-title">لینک‌های سریع</h4>
           <ul class="footer-links">
-            <li><a href="#home">خانه</a></li>
-            <li><a href="#gallery">گالری</a></li>
-            <li><a href="#articles">مقالات</a></li>
-            <li><a href="#contact">تماس با ما</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-section">
-          <h4 class="footer-title">خدمات</h4>
-          <ul class="footer-links">
-            <li><a href="#">طراحی وب</a></li>
-            <li><a href="#">توسعه نرم‌افزار</a></li>
-            <li><a href="#">برندینگ</a></li>
-            <li><a href="#">مشاوره</a></li>
+            <li><router-link to="/">خانه</router-link></li>
+            <li><router-link to="/media?tab=gallery">گالری</router-link></li>
+            <li><router-link to="/media?tab=articles">مقالات</router-link></li>
+            <li><router-link to="/contact">تماس با ما</router-link></li>
           </ul>
         </div>
 
@@ -65,86 +56,7 @@
         </div>
       </div>
 
-      <!-- شماره تماس شعبه‌ها -->
-      <div class="contact-numbers-section">
-        <h3 class="contact-numbers-title">
-          <span class="title-icon">📞</span>
-          شماره تماس شعبه‌ها
-        </h3>
-        <div class="contact-numbers-grid">
-          <div class="contact-number-card city">
-            <div class="card-icon">🏛️</div>
-            <div class="card-content">
-              <div class="city-name">تهران</div>
-              <a href="tel:02191094014" class="phone-number">021-91094014</a>
-            </div>
-          </div>
-          
-          <div class="contact-number-card city">
-            <div class="card-icon">🕌</div>
-            <div class="card-content">
-              <div class="city-name">اصفهان</div>
-              <a href="tel:03191094014" class="phone-number">031-91094014</a>
-            </div>
-          </div>
-          
-          <div class="contact-number-card city">
-            <div class="card-icon">🏜️</div>
-            <div class="card-content">
-              <div class="city-name">کرمان</div>
-              <a href="tel:03491094014" class="phone-number">034-91094014</a>
-            </div>
-          </div>
-          
-          <div class="contact-number-card city">
-            <div class="card-icon">🏛️</div>
-            <div class="card-content">
-              <div class="city-name">یزد</div>
-              <a href="tel:03591094014" class="phone-number">035-91094014</a>
-            </div>
-          </div>
-          
-          <div class="contact-number-card city">
-            <div class="card-icon">⭐</div>
-            <div class="card-content">
-              <div class="city-name">مشهد</div>
-              <a href="tel:05191094014" class="phone-number">051-91094014</a>
-            </div>
-          </div>
-          
-          <div class="contact-number-card city">
-            <div class="card-icon">🌹</div>
-            <div class="card-content">
-              <div class="city-name">شیراز</div>
-              <a href="tel:07191094014" class="phone-number">071-91094014</a>
-            </div>
-          </div>
-          
-          <div class="contact-number-card city">
-            <div class="card-icon">🏝️</div>
-            <div class="card-content">
-              <div class="city-name">کیش</div>
-              <a href="tel:07691094014" class="phone-number">076-91094014</a>
-            </div>
-          </div>
-          
-          <div class="contact-number-card support">
-            <div class="card-icon">🎧</div>
-            <div class="card-content">
-              <div class="city-name">پشتیبانی ۱</div>
-              <a href="tel:09120064014" class="phone-number">0912-0064014</a>
-            </div>
-          </div>
-          
-          <div class="contact-number-card support">
-            <div class="card-icon">💬</div>
-            <div class="card-content">
-              <div class="city-name">پشتیبانی ۲</div>
-              <a href="tel:09130064014" class="phone-number">0913-0064014</a>
-            </div>
-          </div>
-        </div>
-      </div>
+
 
       <div class="footer-bottom">
         <p>&copy; ۱۴۰۴ تمام حقوق محفوظ است</p>
@@ -157,6 +69,20 @@
     </div>
   </footer>
 </template>
+
+<script setup>
+import { onMounted } from 'vue'
+import { useSiteSettings } from '../composables/useSiteSettings'
+
+const { logoUrl, loadSettings, addListener } = useSiteSettings()
+
+onMounted(() => {
+  loadSettings()
+  addListener(() => {
+    loadSettings()
+  })
+})
+</script>
 
 <style scoped>
 .footer {
@@ -185,10 +111,19 @@
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.logo-image {
+  height: 45px;
+  object-fit: contain;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
+  filter: drop-shadow(0 2px 4px rgba(14, 165, 233, 0.2));
 }
 
 .logo-icon {
@@ -219,7 +154,7 @@
 }
 
 .social-link:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   transform: translateY(-3px);
 }
 
@@ -247,7 +182,7 @@
 }
 
 .footer-links a:hover {
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 .footer-contact li {
@@ -260,178 +195,6 @@
 
 .contact-icon {
   font-size: 1.2rem;
-}
-
-/* شماره تماس شعبه‌ها */
-.contact-numbers-section {
-  margin: 3rem 0;
-  padding: 2.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-}
-
-.contact-numbers-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.title-icon {
-  font-size: 2rem;
-  filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.5));
-}
-
-.contact-numbers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.25rem;
-}
-
-.contact-number-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.25rem 1.5rem;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.contact-number-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.contact-number-card.city::before {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
-}
-
-.contact-number-card.support::before {
-  background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%);
-}
-
-.contact-number-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(102, 126, 234, 0.5);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
-}
-
-.contact-number-card:hover::before {
-  opacity: 1;
-}
-
-.contact-number-card.support:hover {
-  border-color: rgba(52, 211, 153, 0.5);
-  box-shadow: 0 10px 30px rgba(52, 211, 153, 0.2);
-}
-
-.card-icon {
-  font-size: 2rem;
-  filter: grayscale(0.3);
-  transition: all 0.4s ease;
-  position: relative;
-  z-index: 1;
-}
-
-.contact-number-card:hover .card-icon {
-  filter: grayscale(0);
-  transform: scale(1.2) rotate(5deg);
-}
-
-.card-content {
-  flex: 1;
-  position: relative;
-  z-index: 1;
-}
-
-.city-name {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #a0a0a0;
-  margin-bottom: 0.25rem;
-  letter-spacing: 0.5px;
-  transition: color 0.3s ease;
-}
-
-.contact-number-card:hover .city-name {
-  color: #ffffff;
-}
-
-.phone-number {
-  display: block;
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #ffffff;
-  text-decoration: none;
-  direction: ltr;
-  text-align: left;
-  font-family: 'Courier New', monospace;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-}
-
-.phone-number:hover {
-  color: #667eea;
-  transform: translateX(-3px);
-}
-
-.contact-number-card.support .phone-number:hover {
-  color: #34d399;
-}
-
-@media (max-width: 1024px) {
-  .contact-numbers-grid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .contact-numbers-section {
-    padding: 1.5rem;
-    margin: 2rem 0;
-  }
-  
-  .contact-numbers-title {
-    font-size: 1.5rem;
-  }
-  
-  .contact-numbers-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .contact-number-card {
-    padding: 1rem 1.25rem;
-  }
-  
-  .card-icon {
-    font-size: 1.75rem;
-  }
-  
-  .phone-number {
-    font-size: 1rem;
-  }
 }
 
 .footer-bottom {

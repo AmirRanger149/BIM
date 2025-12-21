@@ -22,7 +22,7 @@
           📝 مقالات
         </router-link>
         <router-link to="/admin/gallery" class="nav-item" :class="{ active: isActive('gallery') }" @click="closeSidebar">
-          🎨 گالری
+          🎨 گالری پروژه ها
         </router-link>
         <router-link to="/admin/testimonials" class="nav-item" :class="{ active: isActive('testimonials') }" @click="closeSidebar">
           ⭐ دیدگاه های برتر
@@ -36,17 +36,20 @@
         <router-link to="/admin/sliders" class="nav-item" :class="{ active: isActive('sliders') }" @click="closeSidebar">
           🎬 اسلایدرها
         </router-link>
+        <router-link to="/admin/hero-sliders" class="nav-item" :class="{ active: isActive('hero-sliders') }" @click="closeSidebar">
+          🏠 Hero Sliders
+        </router-link>
         <router-link to="/admin/certificates" class="nav-item" :class="{ active: isActive('certificates') }" @click="closeSidebar">
           📜 گواهینامه‌ها
-        </router-link>
-        <router-link to="/admin/comments" class="nav-item" :class="{ active: isActive('comments') }" @click="closeSidebar">
-          💬 نظرات
         </router-link>
         <router-link to="/admin/videos" class="nav-item" :class="{ active: isActive('videos') }" @click="closeSidebar">
           🎥 ویدیوها
         </router-link>
         <router-link to="/admin/services" class="nav-item" :class="{ active: isActive('services') }" @click="closeSidebar">
           🎯 خدمات
+        </router-link>
+        <router-link to="/admin/settings" class="nav-item" :class="{ active: isActive('settings') }" @click="closeSidebar">
+          ⚙️ تنظیمات
         </router-link>
       </nav>
       <div class="sidebar-footer">
@@ -90,9 +93,10 @@ const pageTitle = computed(() => {
     'AdminContacts': '📧 پیام‌های تماس',
     'AdminUsers': '👤 کاربران',
     'AdminSliders': '🎬 اسلایدرها',
+    'AdminHeroSliders': '🏠 Hero Sliders',
     'AdminCertificates': '📜 گواهینامه‌ها و استانداردها',
-    'AdminComments': '💬 نظرات و امتیازات',
-    'AdminVideos': '🎥 ویدیوها'
+    'AdminVideos': '🎥 ویدیوها',
+    'AdminSettings': '⚙️ تنظیمات'
   }
   return titles[route.name] || 'پنل مدیریت'
 })
@@ -140,7 +144,7 @@ onMounted(() => {
 .nav-item.active { background: rgba(255,255,255,0.12); color: #fff; border-right-color: #fff; box-shadow: inset -3px 0 0 rgba(255,255,255,0.4), 0 10px 26px rgba(0,0,0,0.2); }
 
 .sidebar-footer { padding: 1.25rem 1.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto; }
-.logout-button { width: 100%; padding: 0.75rem; background: linear-gradient(135deg, #f5576c, #f093fb); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.logout-button { width: 100%; padding: 0.75rem; background: linear-gradient(135deg, #06b6d4, #0ea5e9); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; transition: transform 0.2s ease, box-shadow 0.2s ease; }
 .logout-button:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(245,87,108,0.35); }
 
 .admin-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: radial-gradient(circle at 20% 20%, rgba(102,126,234,0.08), transparent 30%), radial-gradient(circle at 80% 0%, rgba(245,87,108,0.08), transparent 28%), var(--admin-bg-2); }

@@ -4,10 +4,10 @@
     <p>صفحه لندینگ آماده است</p>
     
     <div style="margin: 2rem; display: flex; gap: 1rem; justify-content: center;">
-      <a href="/" style="padding: 0.75rem 1.5rem; background: #667eea; color: white; border-radius: 8px; text-decoration: none;">
+      <a href="/" style="padding: 0.75rem 1.5rem; background: #0ea5e9; color: white; border-radius: 8px; text-decoration: none;">
         صفحه اصلی
       </a>
-      <a href="/admin/login" style="padding: 0.75rem 1.5rem; background: #764ba2; color: white; border-radius: 8px; text-decoration: none;">
+      <a href="/admin/login" style="padding: 0.75rem 1.5rem; background: #06b6d4; color: white; border-radius: 8px; text-decoration: none;">
         پنل ادمین
       </a>
     </div>

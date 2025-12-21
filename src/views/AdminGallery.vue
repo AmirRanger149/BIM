@@ -41,16 +41,15 @@
             </div>
           </div>
 
-          <!-- Row 3: Description with Quill Editor -->
+          <!-- Row 3: Description -->
           <div class="form-group full">
             <label>توضیح خلاصه</label>
-            <div class="editor-container">
-              <QuillEditor
-                v-model:content="formData.description"
-                theme="snow"
-                content-type="html"
-              />
-            </div>
+            <textarea 
+              v-model="formData.description" 
+              placeholder="توضیح کوتاه درباره پروژه"
+              rows="3"
+              required
+            ></textarea>
           </div>
 
           <!-- Row 3.5: Full Description with Quill Editor -->
@@ -87,6 +86,44 @@
                 <option v-for="slider in sliders" :key="slider.id" :value="slider.id">
                   {{ slider.name }} ({{ slider.images?.length || 0 }} عکس)
                 </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 5: 3D Model or iFrame URL -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>📦 مدل 3D یا لینک iframe</label>
+              <div class="form-hint-text">
+                <p>گزینه 1: آپلود فایل 3D (GLB, GLTF, OBJ)</p>
+              </div>
+              <div class="file-input-group">
+                <input 
+                  type="file" 
+                  @change="handleModelUpload" 
+                  accept=".glb,.gltf,.obj"
+                  class="file-input"
+                />
+                <input v-model="formData.model_url" type="text" placeholder="یا URL مدل 3D را پیوند کنید" />
+              </div>
+              <div v-if="uploadingModel" class="uploading-status">درحال آپلود مدل...</div>
+              <div class="form-hint-text">
+                <p style="margin-top: 12px;">گزینه 2: لینک iframe (مثال: https://b1m.ir/project/projects/pasargad/3D/)</p>
+              </div>
+              <input 
+                v-model="formData.iframe_url" 
+                type="url"
+                placeholder="لینک iframe را وارد کنید"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label>نوع مدل</label>
+              <select v-model="formData.model_type">
+                <option value="auto">تشخیص خودکار</option>
+                <option value="gltf">GLTF</option>
+                <option value="glb">GLB</option>
+                <option value="obj">OBJ</option>
               </select>
             </div>
           </div>
@@ -147,6 +184,7 @@ const loading = ref(false)
 const showForm = ref(false)
 const editingId = ref(null)
 const uploadingImage = ref(false)
+const uploadingModel = ref(false)
 const formData = ref({
   title: '',
   description: '',
@@ -154,7 +192,10 @@ const formData = ref({
   category: '',
   image: '',
   slider_id: null,
-  duration: ''
+  duration: '',
+  model_url: '',
+  model_type: 'auto',
+  iframe_url: ''
 })
 
 const loadItems = async () => {
@@ -221,6 +262,36 @@ const handleImageUpload = async (event) => {
   }
 }
 
+const handleModelUpload = async (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  // Validate file type
+  const validExtensions = ['glb', 'gltf', 'obj']
+  const fileExtension = file.name.split('.').pop().toLowerCase()
+  if (!validExtensions.includes(fileExtension)) {
+    try { const { error: tError } = await import('../composables/useToast.js'); tError('فرمت فایل مدل نامعتبر است. از GLB، GLTF یا OBJ استفاده کنید'); } catch {}
+    return
+  }
+
+  uploadingModel.value = true
+  try {
+    const formDataFile = new FormData()
+    formDataFile.append('file', file)
+    const response = await adminService.uploadFile(formDataFile)
+    formData.value.model_url = response.url
+    
+    // Auto-detect model type
+    if (fileExtension !== 'auto') {
+      formData.value.model_type = fileExtension
+    }
+  } catch (error) {
+    try { const { error: tError } = await import('../composables/useToast.js'); tError(error.response?.data?.detail || 'خطا در آپلود مدل 3D'); } catch {}
+  } finally {
+    uploadingModel.value = false
+  }
+}
+
 const closeForm = () => {
   showForm.value = false
   editingId.value = null
@@ -231,7 +302,9 @@ const closeForm = () => {
     category: '',
     image: '',
     slider_id: null,
-    duration: ''
+    duration: '',
+    model_url: '',
+    model_type: 'auto'
   }
 }
 
@@ -365,7 +438,7 @@ onMounted(() => {
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0ea5e9;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -386,7 +459,7 @@ onMounted(() => {
 }
 
 .file-input:hover {
-  border-color: #667eea;
+  border-color: #0ea5e9;
   background: rgba(102, 126, 234, 0.05);
 }
 
@@ -395,10 +468,17 @@ onMounted(() => {
 }
 
 .uploading-status {
-  color: #667eea;
+  color: #0ea5e9;
   font-size: 0.85rem;
   font-weight: 600;
   margin-top: 0.5rem;
+}
+
+.form-hint {
+  display: block;
+  color: #999;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
 }
 
 /* Editor Container */
@@ -440,7 +520,7 @@ onMounted(() => {
 :deep(.ql-toolbar.ql-snow .ql-picker-label:hover),
 :deep(.ql-toolbar.ql-snow .ql-picker-item:hover),
 :deep(.ql-toolbar.ql-snow .ql-picker-item.ql-selected) {
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 /* Form Actions */
@@ -464,7 +544,7 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
@@ -505,7 +585,7 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border: 4px solid rgba(102, 126, 234, 0.2);
-  border-top-color: #667eea;
+  border-top-color: #0ea5e9;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -558,7 +638,7 @@ onMounted(() => {
   position: relative;
   height: 200px;
   overflow: hidden;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
 }
 
 .card-image {
@@ -579,7 +659,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   font-size: 3rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
 }
 
@@ -599,7 +679,7 @@ onMounted(() => {
 }
 
 .overlay-badge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   padding: 0.6rem 1.2rem;
   border-radius: 50px;
@@ -643,7 +723,7 @@ onMounted(() => {
   background: rgba(102, 126, 234, 0.1);
   padding: 0.3rem 0.7rem;
   border-radius: 8px;
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: 500;
 }
 
@@ -691,7 +771,7 @@ onMounted(() => {
 }
 
 .description-html :deep(a) {
-  color: #667eea;
+  color: #0ea5e9;
   text-decoration: none;
 }
 
@@ -721,7 +801,7 @@ onMounted(() => {
 
 .btn-edit {
   background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 .btn-edit:hover {

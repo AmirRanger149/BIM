@@ -24,6 +24,10 @@ class Article(Base):
     read_time = Column(String(50))
     featured = Column(Boolean, default=False)
     tags = Column(JSON)  # لیست تگ‌ها
+    # مدل 3D
+    iframe_url = Column(String(500), nullable=True)  # URL iframe برای نمایش مدل 3D
+    model_url = Column(String(500), nullable=True)  # URL فایل مدل 3D (GLTF, GLB, OBJ)
+    model_type = Column(String(20), default='auto')  # نوع مدل: gltf, glb, obj, auto
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
@@ -48,6 +52,10 @@ class GalleryItem(Base):
     views = Column(Integer, default=0)
     comments = Column(Integer, default=0)
     technologies = Column(JSON)  # لیست تکنولوژی‌ها
+    # مدل 3D
+    model_url = Column(String(500), nullable=True)  # URL فایل مدل 3D (GLTF, GLB, OBJ)
+    model_type = Column(String(20), default='auto')  # نوع مدل: gltf, glb, obj, auto
+    iframe_url = Column(String(500), nullable=True)  # URL iframe برای نمایش مدل 3D
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
@@ -180,25 +188,6 @@ class Visit(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
 
 
-class Comment(Base):
-    """مدل نظرات برای مقالات و پروژه‌ها"""
-    __tablename__ = "comments"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False)
-    email = Column(String(255), nullable=False)
-    content = Column(Text, nullable=False)
-    rating = Column(Integer, nullable=False)  # امتیاز 1 تا 5
-    approved = Column(Boolean, default=False, index=True)
-    
-    # نوع محتوا: article یا project
-    content_type = Column(String(20), nullable=False, index=True)
-    content_id = Column(Integer, nullable=False, index=True)
-    
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-
-
 class Video(Base):
     """مدل ویدیوها برای نمایش در صفحه اصلی"""
     __tablename__ = "videos"
@@ -213,4 +202,14 @@ class Video(Base):
     active = Column(Boolean, default=True, index=True)
     order = Column(Integer, default=0)  # ترتیب نمایش
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+class Settings(Base):
+    """مدل تنظیمات عمومی سایت"""
+    __tablename__ = "settings"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    key = Column(String(100), unique=True, nullable=False, index=True)  # مثل: logo, favicon, site_name
+    value = Column(Text, nullable=True)  # مقدار (URL یا متن)
+    description = Column(Text, nullable=True)  # توضیح
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

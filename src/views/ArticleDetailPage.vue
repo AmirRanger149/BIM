@@ -87,109 +87,26 @@
       <!-- Article Body -->
       <div class="article-body">
         <div class="container">
-          <div class="content-wrapper">
-            <!-- Main Content -->
-            <div class="article-content" itemprop="articleBody">
-              <div v-if="article.full_content" v-html="article.full_content"></div>
-              <div v-else>
-                <p>{{ article.content || article.excerpt }}</p>
-              </div>
+          <!-- Main Content Only -->
+          <div class="article-content" itemprop="articleBody">
+            <div v-if="article.full_content" v-html="article.full_content"></div>
+            <div v-else>
+              <p>{{ article.content || article.excerpt }}</p>
             </div>
-            
-            <!-- Sidebar -->
-            <aside class="article-sidebar">
-              <!-- Table of Contents -->
-              <div class="sidebar-widget toc-widget">
-                <h3>فهرست مطالب</h3>
-                <ul class="toc-list">
-                  <li><a href="#section-1">مقدمه</a></li>
-                  <li><a href="#section-2">محتوای اصلی</a></li>
-                  <li><a href="#section-3">نتیجه‌گیری</a></li>
-                </ul>
-              </div>
-              
-              <!-- Share Widget -->
-              <div class="sidebar-widget share-widget">
-                <h3>اشتراک‌گذاری</h3>
-                <div class="share-buttons">
-                  <button @click="share('twitter')" class="share-btn twitter" aria-label="اشتراک در توییتر">
-                    <span>🐦</span>
-                  </button>
-                  <button @click="share('linkedin')" class="share-btn linkedin" aria-label="اشتراک در لینکدین">
-                    <span>💼</span>
-                  </button>
-                  <button @click="share('telegram')" class="share-btn telegram" aria-label="اشتراک در تلگرام">
-                    <span>✈️</span>
-                  </button>
-                  <button @click="share('whatsapp')" class="share-btn whatsapp" aria-label="اشتراک در واتساپ">
-                    <span>💬</span>
-                  </button>
-                </div>
-              </div>
-              
-              <!-- Related Articles -->
-              <div class="sidebar-widget related-widget" v-if="relatedArticles.length">
-                <h3>مقالات مرتبط</h3>
-                <div class="related-list">
-                  <router-link 
-                    v-for="related in relatedArticles" 
-                    :key="related.id"
-                    :to="`/article/${related.id}`"
-                    class="related-item"
-                  >
-                    <div class="related-image">
-                      <ImageSlider
-                        :image="related.image"
-                        :images="related.images"
-                        :icon="related.icon"
-                        :gradient="related.gradient"
-                      />
-                    </div>
-                    <div class="related-content">
-                      <h4>{{ related.title }}</h4>
-                      <span class="related-date">{{ formatDate(related.created_at) }}</span>
-                    </div>
-                  </router-link>
-                </div>
-              </div>
-            </aside>
-          </div>
-          
-          <!-- Tags -->
-          <div class="article-tags" v-if="article.tags && article.tags.length" itemprop="keywords">
-            <span class="tags-label">برچسب‌ها:</span>
-            <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
-          </div>
-          
-          <!-- Navigation -->
-          <div class="article-navigation">
-            <router-link 
-              v-if="previousArticle" 
-              :to="`/article/${previousArticle.id}`"
-              class="nav-btn prev-btn"
-            >
-              <span class="nav-label">مقاله قبلی</span>
-              <span class="nav-title">{{ previousArticle.title }}</span>
-            </router-link>
-            <router-link 
-              v-if="nextArticle" 
-              :to="`/article/${nextArticle.id}`"
-              class="nav-btn next-btn"
-            >
-              <span class="nav-label">مقاله بعدی</span>
-              <span class="nav-title">{{ nextArticle.title }}</span>
-            </router-link>
           </div>
         </div>
       </div>
       
-      <!-- بخش نظرات -->
-      <div class="container" v-if="article">
-        <CommentSection
-          content-type="article"
-          :content-id="article.id"
-          :is-dark="isDark"
-        />
+      <!-- 3D Viewer Section -->
+      <div class="viewer-section" v-if="article.iframe_url || article.model_url">
+        <div class="container">
+          <h2 class="section-title">نمایشگر 3D</h2>
+          <Viewer3D 
+            :iframe-url="article.iframe_url"
+            :model-url="article.model_url"
+            :model-type="article.model_type"
+          />
+        </div>
       </div>
     </article>
     
@@ -204,7 +121,7 @@ import { getArticle, getArticles, getSlider } from '../api/services'
 import ImageSlider from '../components/ImageSlider.vue'
 import Navbar from '../components/Navbar.vue'
 import Footer from '../components/Footer.vue'
-import CommentSection from '../components/CommentSection.vue'
+import Viewer3D from '../components/Viewer3D.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -378,12 +295,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* بخش نظرات */
-.container .comments-section {
-  margin-top: 3rem;
-  margin-bottom: 3rem;
-}
-
 .article-page {
   min-height: 100vh;
   background: white;
@@ -417,7 +328,7 @@ onMounted(() => {
   width: 50px;
   height: 50px;
   border: 4px solid rgba(102, 126, 234, 0.1);
-  border-top-color: #667eea;
+  border-top-color: #0ea5e9;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -435,7 +346,7 @@ onMounted(() => {
 .back-link {
   margin-top: 1rem;
   padding: 0.8rem 1.5rem;
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
   border-radius: 8px;
   text-decoration: none;
@@ -467,7 +378,7 @@ onMounted(() => {
 }
 
 .breadcrumb a {
-  color: #667eea;
+  color: #0ea5e9;
   text-decoration: none;
   transition: color 0.3s;
 }
@@ -497,7 +408,7 @@ onMounted(() => {
 .article-category {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background: #667eea;
+  background: #0ea5e9;
   color: white;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -547,7 +458,7 @@ onMounted(() => {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
   color: white;
   display: flex;
   align-items: center;
@@ -608,17 +519,12 @@ onMounted(() => {
   padding: 3rem 0;
 }
 
-.content-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 3rem;
-  align-items: start;
-}
-
 .article-content {
   font-size: 1.1rem;
   line-height: 1.9;
   color: #333;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .dark-mode .article-content {
@@ -664,7 +570,7 @@ onMounted(() => {
 }
 
 .article-content :deep(blockquote) {
-  border-right: 4px solid #667eea;
+  border-right: 4px solid #0ea5e9;
   padding: 1rem 1.5rem;
   margin: 2rem 0;
   background: #f8f9fa;
@@ -676,256 +582,30 @@ onMounted(() => {
   background: #2d2d2d;
 }
 
-/* Sidebar */
-.article-sidebar {
-  position: sticky;
-  top: 6rem;
+/* 3D Viewer Section */
+.viewer-section {
+  background: #f5f5f5;
+  padding: 4rem 0;
+  margin-top: 3rem;
 }
 
-.sidebar-widget {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.dark-mode .sidebar-widget {
+.dark-mode .viewer-section {
   background: #2d2d2d;
 }
 
-.sidebar-widget h3 {
-  font-size: 1.1rem;
+.section-title {
+  font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  text-align: center;
+  margin-bottom: 2rem;
   color: #1a1a1a;
 }
 
-.dark-mode .sidebar-widget h3 {
+.dark-mode .section-title {
   color: white;
-}
-
-/* TOC */
-.toc-list {
-  list-style: none;
-  padding: 0;
-}
-
-.toc-list li {
-  margin-bottom: 0.8rem;
-}
-
-.toc-list a {
-  color: #667eea;
-  text-decoration: none;
-  transition: all 0.3s;
-  display: block;
-  padding: 0.5rem;
-  border-radius: 6px;
-}
-
-.toc-list a:hover {
-  background: #f0f0f0;
-  padding-right: 1rem;
-}
-
-.dark-mode .toc-list a:hover {
-  background: #3d3d3d;
-}
-
-/* Share Buttons */
-.share-buttons {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.8rem;
-}
-
-.share-btn {
-  padding: 0.8rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1.5rem;
-  transition: all 0.3s;
-  background: #f0f0f0;
-}
-
-.dark-mode .share-btn {
-  background: #3d3d3d;
-}
-
-.share-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Related Articles */
-.related-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.related-item {
-  display: flex;
-  gap: 1rem;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.3s;
-  padding: 0.5rem;
-  border-radius: 8px;
-}
-
-.related-item:hover {
-  background: #f0f0f0;
-}
-
-.dark-mode .related-item:hover {
-  background: #3d3d3d;
-}
-
-.related-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.related-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.related-content h4 {
-  font-size: 0.95rem;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.related-date {
-  font-size: 0.8rem;
-  color: #999;
-}
-
-/* Tags */
-.article-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-  padding: 2rem 0;
-  border-top: 1px solid #e0e0e0;
-  border-bottom: 1px solid #e0e0e0;
-  margin: 3rem 0;
-  align-items: center;
-}
-
-.dark-mode .article-tags {
-  border-color: #444;
-}
-
-.tags-label {
-  font-weight: 600;
-  color: #666;
-}
-
-.dark-mode .tags-label {
-  color: #ccc;
-}
-
-.tag {
-  padding: 0.5rem 1rem;
-  background: #f0f0f0;
-  color: #667eea;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.3s;
-}
-
-.dark-mode .tag {
-  background: #3d3d3d;
-}
-
-.tag:hover {
-  background: #667eea;
-  color: white;
-}
-
-/* Article Navigation */
-.article-navigation {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin: 3rem 0;
-}
-
-.nav-btn {
-  padding: 1.5rem;
-  background: white;
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.3s;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.dark-mode .nav-btn {
-  background: #2d2d2d;
-  border-color: #444;
-}
-
-.nav-btn:hover {
-  border-color: #667eea;
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-}
-
-.nav-label {
-  font-size: 0.85rem;
-  color: #999;
-  font-weight: 600;
-}
-
-.nav-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #667eea;
-}
-
-.prev-btn .nav-label::before {
-  content: '← ';
-}
-
-.next-btn .nav-label::after {
-  content: ' →';
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-  .content-wrapper {
-    grid-template-columns: 1fr;
-  }
-  
-  .article-sidebar {
-    position: static;
-  }
-  
-  .sidebar-widget {
-    margin-bottom: 1rem;
-  }
-}
-
 @media (max-width: 768px) {
   .article-title {
     font-size: 1.8rem;
@@ -948,8 +628,8 @@ onMounted(() => {
     font-size: 1rem;
   }
   
-  .share-buttons {
-    grid-template-columns: repeat(4, 1fr);
+  .section-title {
+    font-size: 1.5rem;
   }
 }
 </style>

@@ -296,7 +296,7 @@ onMounted(() => {
 }
 
 .archive-hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   padding: 8rem 0 4rem;
   text-align: center;
   color: white;
@@ -396,7 +396,7 @@ onMounted(() => {
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0ea5e9;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -427,7 +427,7 @@ onMounted(() => {
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   transform: translate(-50%, -50%);
   transition: width 0.6s, height 0.6s;
   z-index: 0;
@@ -478,7 +478,7 @@ onMounted(() => {
 }
 
 .filter-btn.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border-color: transparent;
   transform: scale(1.05);
@@ -603,7 +603,7 @@ onMounted(() => {
 }
 
 .article-category {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   padding: 0.6rem 1.2rem;
   border-radius: 50px;
   font-size: 0.8rem;
@@ -614,7 +614,7 @@ onMounted(() => {
 }
 
 .featured-badge {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 50px;
@@ -674,7 +674,7 @@ onMounted(() => {
 
 .tag-mini {
   background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+  color: #0ea5e9;
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
   font-size: 0.8rem;
@@ -703,7 +703,7 @@ onMounted(() => {
   width: 35px;
   height: 35px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -721,7 +721,7 @@ onMounted(() => {
 }
 
 .read-more {
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -749,7 +749,7 @@ onMounted(() => {
   border: 2px solid rgba(102, 126, 234, 0.3);
   border-radius: 10px;
   background: white;
-  color: #667eea;
+  color: #0ea5e9;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
@@ -761,7 +761,7 @@ onMounted(() => {
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border-color: transparent;
 }
@@ -795,7 +795,7 @@ onMounted(() => {
 }
 
 .page-btn.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: white;
   border-color: transparent;
 }
@@ -864,7 +864,7 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border: 4px solid rgba(102, 126, 234, 0.2);
-  border-top-color: #667eea;
+  border-top-color: #0ea5e9;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
